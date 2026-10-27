@@ -1,0 +1,338 @@
+/* Custom scrollbar and aesthetics */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #020617;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #334155;
+}
+
+/* Smooth transitions */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Glassmorphism subtle enhancement */
+.glass-panel {
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* =============================================
+   LIGHT MODE — body without .dark class
+   Background: #292F36 | Accent: #12F7D6 (teal)
+   ============================================= */
+
+body:not(.dark) {
+    background-color: #292F36 !important;
+    color: #e2e8f0 !important;
+}
+
+/* ---- TEXT ---- */
+body:not(.dark) .text-white {
+    color: #f1f5f9 !important;
+}
+body:not(.dark) .text-slate-100 { color: #e2e8f0 !important; }
+body:not(.dark) .text-slate-200 { color: #cbd5e1 !important; }
+body:not(.dark) .text-slate-300 { color: #94a3b8 !important; }
+body:not(.dark) .text-slate-400 { color: #64748b !important; }
+body:not(.dark) .text-slate-500 { color: #475569 !important; }
+
+/* All orange/amber text → teal */
+body:not(.dark) [class*="text-orange"],
+body:not(.dark) [class*="text-amber"] {
+    color: #12F7D6 !important;
+}
+
+/* group-hover text overrides */
+body:not(.dark) .group:hover [class*="group-hover:text-orange"],
+body:not(.dark) .group:hover [class*="group-hover:text-amber"] {
+    color: #12F7D6 !important;
+}
+
+/* hover:text-orange-* */
+body:not(.dark) [class*="hover:text-orange"]:hover,
+body:not(.dark) [class*="hover:text-amber"]:hover {
+    color: #12F7D6 !important;
+}
+
+/* ---- BACKGROUNDS ---- */
+
+/* Solid orange/amber bg → teal */
+body:not(.dark) .bg-orange-600,
+body:not(.dark) .bg-orange-500 {
+    background-color: #12F7D6 !important;
+    color: #1a1a2e !important;
+}
+
+/* Transparent tints */
+body:not(.dark) .bg-orange-500\/10  { background-color: rgba(18, 247, 214, 0.10) !important; }
+body:not(.dark) .bg-orange-600\/20  { background-color: rgba(18, 247, 214, 0.15) !important; }
+
+/* Hover orange bg */
+body:not(.dark) .hover\:bg-orange-500:hover,
+body:not(.dark) .hover\:bg-orange-600:hover {
+    background-color: #0dd4b8 !important;
+}
+
+/* group-hover bg */
+body:not(.dark) .group:hover .group-hover\:bg-orange-600 {
+    background-color: #12F7D6 !important;
+    color: #1a1a2e !important;
+}
+
+/* Slate backgrounds */
+body:not(.dark) .bg-slate-950      { background-color: #1e252b !important; }
+body:not(.dark) .bg-slate-950\/80  { background-color: rgba(30, 37, 43, 0.85) !important; }
+body:not(.dark) .bg-slate-900      { background-color: #333a42 !important; }
+body:not(.dark) .bg-slate-900\/50  { background-color: rgba(51, 58, 66, 0.50) !important; }
+
+/* ---- GRADIENTS ---- */
+
+/* from-orange-* / from-amber-* → teal */
+body:not(.dark) [class*="from-orange"],
+body:not(.dark) [class*="from-amber"] {
+    --tw-gradient-from: #12F7D6 !important;
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(18,247,214,0)) !important;
+}
+
+/* to-orange-* / to-amber-* → darker teal */
+body:not(.dark) [class*="to-orange"],
+body:not(.dark) [class*="to-amber"] {
+    --tw-gradient-to: #0dd4b8 !important;
+}
+
+/* Radial-gradient header glow: orange → teal in light mode            */
+/* Matches the Tailwind arbitrary class bg-[radial-gradient(...)] that  */
+/* carries rgba(234,88,12,…) and overrides with a soft teal equivalent. */
+body:not(.dark) [class*="bg-[radial-gradient"][class*="rgba(234,88,12"] {
+    background-image: radial-gradient(circle at top right, rgba(13,148,136,0.08), transparent 50%) !important;
+}
+/* center-positioned variant (store, cart, custom-order headers) */
+body:not(.dark) [class*="bg-[radial-gradient"][class*="rgba(234,88,12"][class*="center"] {
+    background-image: radial-gradient(circle at center, rgba(13,148,136,0.08), transparent 70%) !important;
+}
+
+/* hover: gradient variants */
+body:not(.dark) .hover\:from-orange-500:hover,
+body:not(.dark) .hover\:from-orange-600:hover {
+    --tw-gradient-from: #0dd4b8 !important;
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(13,212,184,0)) !important;
+}
+body:not(.dark) .hover\:to-amber-500:hover,
+body:not(.dark) .hover\:to-amber-600:hover {
+    --tw-gradient-to: #0bc4a8 !important;
+}
+
+/* ---- BORDERS ---- */
+
+body:not(.dark) .border-orange-500,
+body:not(.dark) .border-orange-600  { border-color: #12F7D6 !important; }
+body:not(.dark) .border-orange-500\/20 { border-color: rgba(18, 247, 214, 0.20) !important; }
+body:not(.dark) .border-orange-500\/30 { border-color: rgba(18, 247, 214, 0.30) !important; }
+
+/* hover & group-hover border */
+body:not(.dark) .hover\:border-orange-500\/50:hover,
+body:not(.dark) .hover\:border-orange-600:hover    { border-color: rgba(18, 247, 214, 0.50) !important; }
+
+body:not(.dark) .group:hover .group-hover\:border-orange-500\/50,
+body:not(.dark) .group:hover .group-hover\:border-orange-600 {
+    border-color: #12F7D6 !important;
+}
+
+/* focus border */
+body:not(.dark) .focus\:border-orange-500:focus { border-color: #12F7D6 !important; }
+body:not(.dark) input:focus,
+body:not(.dark) textarea:focus,
+body:not(.dark) select:focus {
+    border-color: #12F7D6 !important;
+    outline: none;
+}
+
+/* Slate borders */
+body:not(.dark) .border-slate-800      { border-color: #3d4652 !important; }
+body:not(.dark) .border-slate-800\/50  { border-color: rgba(61, 70, 82, 0.50) !important; }
+body:not(.dark) .border-slate-800\/80  { border-color: rgba(61, 70, 82, 0.80) !important; }
+body:not(.dark) .border-slate-900      { border-color: #1e252b !important; }
+
+/* ---- SHADOWS ---- */
+
+/* Repoint all orange shadow colors to teal */
+body:not(.dark) [class*="shadow-orange"] {
+    --tw-shadow-color: rgba(18, 247, 214, 0.25) !important;
+    --tw-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+                 var(--tw-ring-shadow, 0 0 #0000),
+                 var(--tw-shadow) !important;
+}
+
+/* ---- NAVBAR ---- */
+body:not(.dark) nav {
+    background-color: rgba(30, 37, 43, 0.92) !important;
+    border-bottom-color: #3d4652 !important;
+}
+
+/* Default all nav links to white.
+   Adding [class] boosts specificity to (0,2,2), beating the global
+   [class*="text-orange"] rule at (0,2,0). */
+body:not(.dark) nav a[class] {
+    color: #f1f5f9 !important;
+}
+
+/* Active page link only — class STARTS WITH "text-orange" (e.g. "text-orange-400 font-semibold").
+   Inactive links start with "hover:text-orange-400" so [class^="text-orange"] won't match them. */
+body:not(.dark) nav a[class^="text-orange"] {
+    color: #12F7D6 !important;
+}
+
+/* Hover on any nav link → teal */
+body:not(.dark) nav a[class]:hover {
+    color: #12F7D6 !important;
+}
+
+/* Mobile menu: all links white, hover teal (no active state in mobile menu) */
+body:not(.dark) #mobile-menu a[class] {
+    color: #f1f5f9 !important;
+}
+body:not(.dark) #mobile-menu a[class]:hover {
+    color: #12F7D6 !important;
+}
+
+/* ---- SELECTION ---- */
+body:not(.dark) ::selection {
+    background-color: #12F7D6 !important;
+    color: #1a1a2e !important;
+}
+
+/* ---- SCROLLBAR ---- */
+body:not(.dark)::-webkit-scrollbar-track  { background: #292F36; }
+body:not(.dark)::-webkit-scrollbar-thumb  { background: #3d4652; }
+body:not(.dark)::-webkit-scrollbar-thumb:hover { background: #12F7D6; }
+
+/* ---- DIVIDE ---- */
+body:not(.dark) .divide-slate-800\/60 > * + * {
+    border-color: rgba(61, 70, 82, 0.60) !important;
+}
+
+/* =============================================
+   RESPONSIVE & CROSS-BROWSER FIXES
+   Applies to all screen sizes and browsers
+   ============================================= */
+
+/* Better font rendering across browsers */
+body {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Prevent long words / URLs from breaking layouts on small screens */
+p, li, h1, h2, h3, h4, span, label {
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+/* Navbar backdrop-filter cross-browser */
+nav {
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+}
+
+/* Prevent horizontal scroll on all screens */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ---- TINY PHONE (<375px) tweaks ---- */
+@media (max-width: 374px) {
+    h1 {
+        font-size: clamp(1.75rem, 8vw, 2.25rem) !important;
+    }
+    .filter-btn {
+        font-size: 0.65rem !important;
+        padding: 0.375rem 0.625rem !important;
+    }
+    header.relative.overflow-hidden {
+        padding-top: 2.5rem !important;
+        padding-bottom: 3.5rem !important;
+    }
+}
+
+/* ---- MOBILE — product icon and card sizing ---- */
+@media (max-width: 639px) {
+    #product-icon-container {
+        font-size: 4rem !important;
+    }
+    .product-card .relative.h-64 {
+        height: 10rem !important;
+    }
+    .border-2.border-dashed.rounded-2xl {
+        padding: 1.5rem !important;
+    }
+}
+
+/* ---- FORM ELEMENTS — consistent cross-browser ---- */
+input, textarea, select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    font-size: max(1rem, 16px);
+}
+
+select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='none' stroke='%2394a3b8' stroke-width='2' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.5rem !important;
+    cursor: pointer;
+}
+
+/* ---- FOCUS VISIBLE — keyboard accessibility ---- */
+:focus-visible {
+    outline: 2px solid #f97316;
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* ---- PRINT STYLES ---- */
+@media print {
+    nav, footer, #mobile-menu, #cart-btn, #theme-toggle, #mobile-menu-button {
+        display: none !important;
+    }
+    body {
+        background: white !important;
+        color: black !important;
+    }
+}
+
+/* ---- FIREFOX — scrollbar styling ---- */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #1e293b #020617;
+}
+body:not(.dark) * {
+    scrollbar-color: #3d4652 #292F36;
+}

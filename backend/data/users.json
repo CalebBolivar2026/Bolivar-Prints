@@ -1,0 +1,20 @@
+[
+  {
+    "id": "usr_mv8qi761_kcmt",
+    "name": "Alex Bolivar",
+    "email": "alex@example.com",
+    "phone": "(555) 234-5678",
+    "passwordHash": "db2172d48f09a7950e7efa21610d73628b9e162121b8393850f46ab1a2aefc6241e6b6e063f7a7098e3ea4eb97d3013be11c0ae3a64c3477f9e936fe298121d0",
+    "salt": "9fa8553b95002ed7c08ac21c1736ed67",
+    "shippingAddress": {
+      "street": "742 Evergreen Terrace",
+      "apt": "",
+      "city": "Orlando",
+      "state": "FL",
+      "zip": "32801",
+      "country": "United States"
+    },
+    "createdAt": "2026-10-14T23:21:51.049Z",
+    "updatedAt": "2026-10-14T23:22:28.557Z"
+  }
+]

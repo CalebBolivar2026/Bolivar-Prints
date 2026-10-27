@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bolivar Prints | Admin Portal & Store Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script>
+        // Enforce dark mode by default
+        if (localStorage.getItem('theme') !== 'light') {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+</head>
+<body class="dark bg-slate-950 text-slate-100 font-['Inter',sans-serif] antialiased selection:bg-orange-500 selection:text-white min-h-screen flex flex-col">
+
+    <!-- Top Admin Navbar -->
+    <nav class="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Brand & Admin Badge -->
+            <div class="flex items-center space-x-3">
+                <a href="index.html" class="flex items-center space-x-3 group">
+                    <img src="BP-logo.png" alt="Bolivar Prints Logo" class="w-10 h-10 object-contain" />
+                    <div>
+                        <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">BOLIVAR PRINTS</span>
+                        <span class="block text-[10px] tracking-widest text-orange-500 font-semibold uppercase">Admin Portal</span>
+                    </div>
+                </a>
+                <span class="hidden sm:inline-flex items-center space-x-1 px-2.5 py-1 rounded-full bg-orange-500/10 border border-orange-500/30 text-orange-400 text-[10px] font-black uppercase tracking-wider">
+                    <i class="fa-solid fa-shield-halved text-[9px]"></i>
+                    <span>Store Admin Mode</span>
+                </span>
+            </div>
+
+            <!-- Right Controls -->
+            <div class="flex items-center space-x-3">
+                <a href="store.html" target="_blank" class="flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition-all text-xs font-semibold" title="View the storefront as customers see it">
+                    <i class="fa-solid fa-arrow-up-right-from-square text-orange-400 text-xs"></i>
+                    <span class="hidden sm:inline">View Live Store</span>
+                </a>
+
+                <button id="theme-toggle" class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition-all cursor-pointer" title="Toggle Dark/Light Mode">
+                    <i id="theme-icon" class="fa-solid fa-moon text-orange-400"></i>
+                </button>
+
+                <div class="flex items-center space-x-2 pl-2 border-l border-slate-800">
+                    <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-amber-500 to-orange-600 flex items-center justify-center text-white text-[11px] font-black uppercase shadow-sm">
+                        AD
+                    </div>
+                    <span id="admin-user-display" class="hidden md:inline text-xs font-semibold text-slate-200">Admin</span>
+                    <button type="button" onclick="handleAdminLogout()" class="p-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 text-xs transition-colors cursor-pointer" title="Sign Out of Admin Portal">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Admin Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+        
+        <!-- Welcome & KPI Overview -->
+        <div class="mb-8">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Admin Store Manager</h1>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-1">Configure customer announcements, manage product catalog, and track orders.</p>
+                </div>
+                <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-400">
+                    <i class="fa-solid fa-circle text-emerald-400 text-[8px] animate-pulse"></i>
+                    <span>Live Backend Connected</span>
+                </div>
+            </div>
+
+            <!-- KPI Cards Grid -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 sm:p-5">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-semibold text-slate-400">Total Revenue</span>
+                        <div class="w-8 h-8 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-400 text-sm">
+                            <i class="fa-solid fa-dollar-sign"></i>
+                        </div>
+                    </div>
+                    <div id="stat-revenue" class="text-xl sm:text-2xl font-black text-white">$0.00</div>
+                    <p class="text-[10px] text-slate-500 mt-1">From completed & confirmed orders</p>
+                </div>
+
+                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 sm:p-5">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-semibold text-slate-400">Customer Orders</span>
+                        <div class="w-8 h-8 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 text-sm">
+                            <i class="fa-solid fa-receipt"></i>
+                        </div>
+                    </div>
+                    <div id="stat-orders" class="text-xl sm:text-2xl font-black text-white">0</div>
+                    <p class="text-[10px] text-slate-500 mt-1">Total customer purchases</p>
+                </div>
+
+                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 sm:p-5">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-semibold text-slate-400">Store Products</span>
+                        <div class="w-8 h-8 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400 text-sm">
+                            <i class="fa-solid fa-cube"></i>
+                        </div>
+                    </div>
+                    <div id="stat-products" class="text-xl sm:text-2xl font-black text-white">0</div>
+                    <p class="text-[10px] text-slate-500 mt-1">Active items in catalog</p>
+                </div>
+
+                <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 sm:p-5">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-semibold text-slate-400">Customer Users</span>
+                        <div class="w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-sm">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                    </div>
+                    <div id="stat-users" class="text-xl sm:text-2xl font-black text-white">0</div>
+                    <p class="text-[10px] text-slate-500 mt-1">Registered buyer accounts</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Selector Bar -->
+        <div class="flex flex-wrap items-center gap-2 p-1.5 rounded-2xl bg-slate-900 border border-slate-800 mb-6">
+            <button type="button" id="tab-btn-announcement" onclick="switchAdminTab('announcement')"
+                class="py-2.5 px-4 rounded-xl text-xs font-bold transition-all bg-orange-600 text-white shadow-md shadow-orange-600/20 cursor-pointer flex items-center space-x-2">
+                <i class="fa-solid fa-bullhorn text-xs"></i>
+                <span>Customer Announcement</span>
+            </button>
+            <button type="button" id="tab-btn-products" onclick="switchAdminTab('products')"
+                class="py-2.5 px-4 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white cursor-pointer flex items-center space-x-2">
+                <i class="fa-solid fa-box text-xs"></i>
+                <span>Products & Catalog</span>
+            </button>
+            <button type="button" id="tab-btn-orders" onclick="switchAdminTab('orders')"
+                class="py-2.5 px-4 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white cursor-pointer flex items-center space-x-2">
+                <i class="fa-solid fa-receipt text-xs"></i>
+                <span>Customer Orders</span>
+            </button>
+            <button type="button" id="tab-btn-users" onclick="switchAdminTab('users')"
+                class="py-2.5 px-4 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white cursor-pointer flex items-center space-x-2">
+                <i class="fa-solid fa-users text-xs"></i>
+                <span>Registered Customers</span>
+            </button>
+            <button type="button" id="tab-btn-contact" onclick="switchAdminTab('contact')"
+                class="py-2.5 px-4 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white cursor-pointer flex items-center space-x-2">
+                <i class="fa-solid fa-envelope text-xs"></i>
+                <span>Contact Submissions</span>
+                <span id="contact-tab-badge" class="hidden px-2 py-0.5 rounded-full text-[10px] bg-orange-500/20 text-orange-400 font-bold ml-1">0</span>
+            </button>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════════════ -->
+        <!-- TAB 1: Announcement & Live Store Changes -->
+        <!-- ═══════════════════════════════════════════════════════════════════════ -->
+        <div id="tab-pane-announcement" class="space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-800">
+                    <div>
+                        <div class="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[10px] font-bold uppercase mb-2">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span>Storefront Broadcast</span>
+                        </div>
+                        <h2 class="text-xl font-bold text-white">Live Customer Announcement Banner</h2>
+                        <p class="text-xs text-slate-400 mt-1">Changes made here are instantly displayed at the very top of every page for your customers.</p>
+                    </div>
+
+                    <!-- Enable/Disable Switch -->
+                    <label class="flex items-center space-x-3 cursor-pointer select-none">
+                        <span class="text-xs font-semibold text-slate-300">Banner Active on Site:</span>
+                        <div class="relative">
+                            <input type="checkbox" id="setting-banner-enabled" class="sr-only peer" checked>
+                            <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:width-5 after:w-5 after:transition-all peer-checked:bg-orange-600"></div>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Form Controls -->
+                <form onsubmit="saveSettings(event)" class="space-y-5 text-xs">
+                    
+                    <div>
+                        <label class="block text-slate-300 font-semibold mb-1.5" for="setting-banner-text">
+                            Announcement Message <span class="text-orange-400">*</span>
+                        </label>
+                        <input type="text" id="setting-banner-text" required
+                            placeholder="e.g. 🎉 Special Offer: 20% off all precision 3D prints this weekend with code BOLIVAR20!"
+                            class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 focus:border-orange-500 text-white placeholder-slate-600 focus:outline-none transition-colors">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-slate-300 font-semibold mb-1.5" for="setting-banner-badge">Badge Label</label>
+                            <input type="text" id="setting-banner-badge" placeholder="Special Notice"
+                                class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-orange-500 text-white placeholder-slate-600 focus:outline-none transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-slate-300 font-semibold mb-1.5" for="setting-banner-link-text">Action Button Text (Optional)</label>
+                            <input type="text" id="setting-banner-link-text" placeholder="Browse Catalog"
+                                class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-orange-500 text-white placeholder-slate-600 focus:outline-none transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-slate-300 font-semibold mb-1.5" for="setting-banner-link-url">Target Link URL</label>
+                            <input type="text" id="setting-banner-link-url" placeholder="store.html"
+                                class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-orange-500 text-white placeholder-slate-600 focus:outline-none transition-colors">
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <label class="block text-slate-300 font-semibold mb-1.5" for="setting-promo-code">Active Storewide Promo Code</label>
+                        <input type="text" id="setting-promo-code" placeholder="BOLIVAR10"
+                            class="w-full sm:w-1/2 px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-orange-500 text-white placeholder-slate-600 focus:outline-none transition-colors uppercase font-mono">
+                    </div>
+
+                    <!-- Live Customer Preview Area -->
+                    <div class="pt-4 border-t border-slate-800/80">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold text-slate-300 flex items-center space-x-1.5">
+                                <i class="fa-solid fa-eye text-orange-400"></i>
+                                <span>Real-Time Customer Preview</span>
+                            </span>
+                            <span class="text-[10px] text-slate-500">How customers see this at the top of Bolivar Prints</span>
+                        </div>
+
+                        <div id="banner-live-preview" class="p-3 bg-slate-950/70 border border-dashed border-slate-800 rounded-2xl">
+                            <!-- Populated dynamically by admin.js -->
+                        </div>
+                    </div>
+
+                    <!-- Save & Publish Button -->
+                    <div class="pt-4 flex items-center justify-end space-x-3">
+                        <button type="submit" id="save-settings-btn"
+                            class="py-3 px-6 rounded-xl bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-500 hover:to-amber-500 text-white font-bold text-xs shadow-lg shadow-orange-600/20 transition-all cursor-pointer flex items-center space-x-1.5">
+                            <i class="fa-solid fa-bolt mr-1"></i>
+                            <span>Publish Live to Store</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════════════ -->
+        <!-- TAB 2: Products & Catalog -->
+        <!-- ═══════════════════════════════════════════════════════════════════════ -->
+        <div id="tab-pane-products" class="hidden space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-white">Product Catalog Management</h2>
+                        <p class="text-xs text-slate-400 mt-1">Add items, adjust prices, edit descriptions, or toggle stock availability.</p>
+                    </div>
+                    <button type="button" onclick="openAddProductModal()"
+                        class="py-2.5 px-4 rounded-xl bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-500 hover:to-amber-500 text-white font-bold text-xs shadow-md shadow-orange-600/20 transition-all cursor-pointer flex items-center space-x-2">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                        <span>Add New Product</span>
+                    </button>
+                </div>
+
+                <!-- Products Table -->
+                <div class="overflow-x-auto rounded-2xl border border-slate-800">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-800 bg-slate-950/60 text-[11px] font-bold uppercase text-slate-400">
+                                <th class="py-3 px-4">Product</th>
+                                <th class="py-3 px-4">Category</th>
+                                <th class="py-3 px-4">Price</th>
+                                <th class="py-3 px-4">Badge / Tag</th>
+                                <th class="py-3 px-4">Stock Status</th>
+                                <th class="py-3 px-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-products-table-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════════════ -->
+        <!-- TAB 3: Customer Orders -->
+        <!-- ═══════════════════════════════════════════════════════════════════════ -->
+        <div id="tab-pane-orders" class="hidden space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
+                <div class="mb-6">
+                    <h2 class="text-xl font-bold text-white">Customer Orders</h2>
+                    <p class="text-xs text-slate-400 mt-1">Review orders and update fulfillment status so customers see real-time progress.</p>
+                </div>
+
+                <div class="overflow-x-auto rounded-2xl border border-slate-800">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-800 bg-slate-950/60 text-[11px] font-bold uppercase text-slate-400">
+                                <th class="py-3 px-4">Order ID</th>
+                                <th class="py-3 px-4">Customer</th>
+                                <th class="py-3 px-4">Items</th>
+                                <th class="py-3 px-4">Total</th>
+                                <th class="py-3 px-4">Date</th>
+                                <th class="py-3 px-4">Update Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-orders-table-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════════════ -->
+        <!-- TAB 4: Registered Customers -->
+        <!-- ═══════════════════════════════════════════════════════════════════════ -->
+        <div id="tab-pane-users" class="hidden space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
+                <div class="mb-6">
+                    <h2 class="text-xl font-bold text-white">Registered Customer Accounts</h2>
+                    <p class="text-xs text-slate-400 mt-1">View users registered through the site.</p>
+                </div>
+
+                <div class="overflow-x-auto rounded-2xl border border-slate-800">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-800 bg-slate-950/60 text-[11px] font-bold uppercase text-slate-400">
+                                <th class="py-3 px-4">Customer Name</th>
+                                <th class="py-3 px-4">Contact Info</th>
+                                <th class="py-3 px-4">Location</th>
+                                <th class="py-3 px-4">Registered Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-users-table-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- ═══════════════════════════════════════════════════════════════════════ -->
+        <!-- TAB 5: Contact Submissions -->
+        <!-- ═══════════════════════════════════════════════════════════════════════ -->
+        <div id="tab-pane-contact" class="hidden space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-800">
+                    <div>
+                        <div class="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[10px] font-bold uppercase mb-2">
+                            <i class="fa-solid fa-inbox"></i>
+                            <span>Inbox</span>
+                        </div>
+                        <h2 class="text-xl font-bold text-white">Customer Contact Submissions</h2>
+                        <p class="text-xs text-slate-400 mt-1">Direct inquiries, feedback, and custom quote requests sent via the storefront contact form.</p>
+                    </div>
+
+                    <!-- Search & Filter Controls -->
+                    <div class="flex flex-wrap items-center gap-3">
+                        <div class="relative">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+                            <input type="text" id="contact-search-input" oninput="filterContactSubmissions()" placeholder="Search sender, email, or message..."
+                                class="pl-9 pr-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 focus:border-orange-500 text-white text-xs placeholder-slate-600 focus:outline-none transition-colors w-48 sm:w-64">
+                        </div>
+                        <select id="contact-filter-status" onchange="filterContactSubmissions()"
+                            class="py-2 px-3 rounded-xl bg-slate-950 border border-slate-800 text-xs font-semibold text-white focus:outline-none focus:border-orange-500 transition-colors">
+                            <option value="all">All Messages</option>
+                            <option value="unread">Unread Only</option>
+                            <option value="read">Read Only</option>
+                            <option value="replied">Replied Only</option>
+                        </select>
+                        <button type="button" onclick="loadContactSubmissions()" title="Refresh Submissions"
+                            class="py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold transition-colors cursor-pointer flex items-center space-x-1.5">
+                            <i class="fa-solid fa-rotate-right"></i>
+                            <span class="hidden sm:inline">Refresh</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Contact Submissions Table -->
+                <div class="overflow-x-auto rounded-2xl border border-slate-800">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-800 bg-slate-950/60 text-[11px] font-bold uppercase text-slate-400">
+                                <th class="py-3 px-4">Status</th>
+                                <th class="py-3 px-4">Customer</th>
+                                <th class="py-3 px-4">Message Preview</th>
+                                <th class="py-3 px-4">Date Received</th>
+                                <th class="py-3 px-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-contact-table-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ─── Product Edit/Add Modal ───────────────────────────────────────────── -->
+    <div id="product-edit-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-fade-in">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative my-auto">
+            <button type="button" onclick="closeProductModal()" class="absolute top-5 right-5 text-slate-500 hover:text-white p-2">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <h3 id="product-modal-title" class="text-lg font-bold text-white mb-4">Edit Product</h3>
+
+            <form onsubmit="handleProductFormSubmit(event)" class="space-y-4 text-xs">
+                <input type="hidden" id="edit-prod-id">
+
+                <div>
+                    <label class="block text-slate-300 font-semibold mb-1" for="edit-prod-name">Product Name *</label>
+                    <input type="text" id="edit-prod-name" required placeholder="Articulated Crystal Dragon"
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-orange-500 text-white focus:outline-none transition-colors">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-slate-300 font-semibold mb-1" for="edit-prod-price">Price ($) *</label>
+                        <input type="number" id="edit-prod-price" step="0.01" min="0" required placeholder="24.99"
+                            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-orange-500 text-white focus:outline-none transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-slate-300 font-semibold mb-1" for="edit-prod-category">Category</label>
+                        <select id="edit-prod-category"
+                            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-orange-500 text-white focus:outline-none transition-colors">
+                            <option value="decor">Decorative / Decor</option>
+                            <option value="toys">Toys & Fidgets</option>
+                            <option value="holiday">Holiday & Seasonal</option>
+                            <option value="functional">Functional & Desk</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-slate-300 font-semibold mb-1" for="edit-prod-tag">Badge / Tag</label>
+                        <input type="text" id="edit-prod-tag" placeholder="Silk Filament"
+                            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-orange-500 text-white focus:outline-none transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-slate-300 font-semibold mb-1" for="edit-prod-icon">FontAwesome Icon</label>
+                        <input type="text" id="edit-prod-icon" placeholder="fa-cube"
+                            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-orange-500 text-white focus:outline-none transition-colors">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-slate-300 font-semibold mb-1" for="edit-prod-image">Image URL (Optional)</label>
+                    <input type="text" id="edit-prod-image" placeholder="https://example.com/photo.png or /uploads/..."
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-orange-500 text-white focus:outline-none transition-colors">
+                </div>
+
+                <div>
+                    <label class="block text-slate-300 font-semibold mb-1" for="edit-prod-colors">Colors (comma-separated)</label>
+                    <input type="text" id="edit-prod-colors" placeholder="Silk Gold, Matte Black, Galaxy Blue"
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-orange-500 text-white focus:outline-none transition-colors">
+                </div>
+
+                <div>
+                    <label class="block text-slate-300 font-semibold mb-1" for="edit-prod-desc">Description</label>
+                    <textarea id="edit-prod-desc" rows="3" placeholder="Describe the item details, filament type, and dimensions..."
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-orange-500 text-white focus:outline-none transition-colors"></textarea>
+                </div>
+
+                <div class="pt-2 flex items-center justify-end space-x-3">
+                    <button type="button" onclick="closeProductModal()" class="py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold cursor-pointer">
+                        Cancel
+                    </button>
+                    <button type="submit" id="edit-prod-submit-btn" class="py-2.5 px-5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold shadow-md shadow-orange-600/20 cursor-pointer">
+                        Save Product
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ─── Contact Message Detail Modal ─────────────────────────────────────── -->
+    <div id="contact-detail-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-fade-in">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative my-auto">
+            <button type="button" onclick="closeContactModal()" class="absolute top-5 right-5 text-slate-500 hover:text-white p-2">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="flex items-center space-x-3 mb-4">
+                <div class="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-400 text-lg">
+                    <i class="fa-solid fa-envelope-open-text"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white">Inquiry Details</h3>
+                    <p id="contact-modal-date" class="text-xs text-slate-400"></p>
+                </div>
+            </div>
+
+            <div class="space-y-4 text-xs">
+                <div class="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800/80 space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400 font-semibold">Customer:</span>
+                        <span id="contact-modal-name" class="font-bold text-white"></span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400 font-semibold">Email:</span>
+                        <span id="contact-modal-email" class="text-orange-400 font-mono"></span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400 font-semibold">Status:</span>
+                        <span id="contact-modal-status-badge"></span>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-slate-300 font-semibold mb-1.5">Message:</label>
+                    <div id="contact-modal-message" class="w-full p-4 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 text-xs leading-relaxed whitespace-pre-wrap max-h-60 overflow-y-auto"></div>
+                </div>
+
+                <div class="pt-3 flex flex-wrap items-center justify-between gap-3 border-t border-slate-800/80">
+                    <div class="flex items-center space-x-2">
+                        <select id="contact-modal-status-select" onchange="updateModalContactStatus(this.value)"
+                            class="py-2 px-3 rounded-xl bg-slate-950 border border-slate-800 text-xs font-semibold text-white focus:outline-none focus:border-orange-500 transition-colors">
+                            <option value="unread">Status: Unread</option>
+                            <option value="read">Status: Read</option>
+                            <option value="replied">Status: Replied</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button type="button" onclick="closeContactModal()" class="py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold cursor-pointer">
+                            Close
+                        </button>
+                        <a id="contact-modal-reply-btn" href="#"
+                            class="py-2.5 px-4 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold shadow-md shadow-orange-600/20 cursor-pointer flex items-center space-x-1.5">
+                            <i class="fa-solid fa-reply text-xs"></i>
+                            <span>Reply by Email</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── Security Lock Screen (Displays if not logged in as admin) ──────────── -->
+    <div id="admin-lock-screen" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/95 backdrop-blur-lg animate-fade-in">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 sm:p-8 shadow-2xl text-center">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center text-white text-2xl mx-auto mb-4 shadow-xl shadow-orange-600/30">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            
+            <h2 class="text-xl font-extrabold text-white tracking-tight">Admin Authentication</h2>
+            <p class="text-xs text-slate-400 mt-1 mb-6">Enter your administrator credentials to access store controls</p>
+
+            <div id="admin-login-error" class="hidden mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-medium"></div>
+
+            <form onsubmit="handleAdminDirectLogin(event)" class="space-y-4 text-xs text-left">
+                <div>
+                    <label class="block text-slate-300 font-semibold mb-1" for="admin-login-username">Admin Username</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500"></i>
+                        <input type="text" id="admin-login-username" required value="admin"
+                            class="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-orange-500 text-white focus:outline-none transition-colors">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-slate-300 font-semibold mb-1" for="admin-login-password">Admin Password</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500"></i>
+                        <input type="password" id="admin-login-password" required placeholder="bolivar"
+                            class="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-orange-500 text-white focus:outline-none transition-colors">
+                    </div>
+                </div>
+
+                <button type="submit" id="admin-login-btn"
+                    class="w-full py-3 rounded-xl bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-500 hover:to-amber-500 text-white font-bold shadow-lg shadow-orange-600/20 transition-all cursor-pointer">
+                    <i class="fa-solid fa-lock-open mr-2"></i> Unlock Admin Portal
+                </button>
+            </form>
+
+            <a href="index.html" class="inline-block mt-5 text-[11px] text-slate-500 hover:text-orange-400 transition-colors">
+                <i class="fa-solid fa-arrow-left mr-1"></i> Return to Storefront
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-6 border-t border-slate-900 text-slate-500 text-xs text-center">
+        <p>&copy; 2026 Bolivar Prints. Administrator Control Center.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="main.js"></script>
+    <script src="auth.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

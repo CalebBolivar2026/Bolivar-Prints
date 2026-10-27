@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bolivar Prints | Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-950 text-slate-100 font-['Inter',sans-serif] antialiased selection:bg-orange-500 selection:text-white min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-40 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <a href="index.html" class="flex items-center space-x-3 group">
+                <img src="BP-logo.png" alt="Bolivar Prints Logo" class="w-10 h-10 object-contain" />
+                <div>
+                    <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">BOLIVAR PRINTS</span>
+                    <span class="block text-[10px] tracking-widest text-orange-500 font-semibold uppercase">High-Precision 3D Printing</span>
+                </div>
+            </a>
+            
+            <div class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-300">
+                <a href="index.html" class="hover:text-orange-400 transition-colors">Home</a>
+                <a href="index.html#about" class="hover:text-orange-400 transition-colors">About</a>
+                <a href="store.html" class="text-orange-400 transition-colors font-semibold">Store</a>
+                <a href="custom-order.html" class="hover:text-orange-400 transition-colors">Custom Orders</a>
+                <a href="index.html#contact" class="hover:text-orange-400 transition-colors">Contact</a>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <a href="cart.html"> 
+                    <button id="cart-btn" class="relative p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition-all">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span id="cart-badge" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-orange-600 text-white text-[11px] font-bold rounded-full flex items-center justify-center shadow-md">0</span>
+                    </button>
+                </a>
+                <button id="mobile-menu-button" class="md:hidden p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition-all">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <button id="theme-toggle" class="hidden md:block p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition-all">
+                    <i id="theme-icon" class="fa-solid fa-sun"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-950 border-t border-slate-800">
+            <div class="px-4 pt-2 pb-6 space-y-2 text-sm font-medium text-slate-300">
+                <a href="index.html" class="block py-3 hover:text-orange-400 transition-colors border-b border-slate-800/50">Home</a>
+                <a href="index.html#about" class="block py-3 hover:text-orange-400 transition-colors border-b border-slate-800/50">About</a>
+                <a href="store.html" class="block py-3 hover:text-orange-400 transition-colors border-b border-slate-800/50">Store</a>
+                <a href="custom-order.html" class="block py-3 hover:text-orange-400 transition-colors border-b border-slate-800/50">Custom Orders</a>
+                <a href="cart.html" class="block py-3 hover:text-orange-400 transition-colors border-b border-slate-800/50">Cart</a>
+                <a href="checkout.html" class="block py-3 hover:text-orange-400 transition-colors border-b border-slate-800/50">Checkout</a>
+                <a href="index.html#contact" class="block py-3 hover:text-orange-400 transition-colors">Contact</a>
+                <div class="flex items-center justify-between pt-4 mt-2 border-t border-slate-800/50">
+                    <span class="text-sm font-medium text-slate-300">Dark Mode</span>
+                    <button id="theme-toggle-mobile" class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition-all">
+                        <i id="theme-icon-mobile" class="fa-solid fa-sun"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Store Header -->
+    <header class="py-16 border-b border-slate-900 bg-[radial-gradient(circle_at_center,rgba(234,88,12,0.08),transparent_70%)]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-semibold mb-4">
+                <i class="fa-solid fa-store"></i>
+                <span>Ready-to-Ship Catalog</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
+                Explore 3D Printed Creations
+            </h1>
+            <p class="text-slate-400 text-base max-w-xl mx-auto">
+                Discover functional desk gear, multi-material artistic pieces, and precision parts printed fresh on demand.
+            </p>
+        </div>
+    </header>
+
+    <!-- Main Store Content & Filters -->
+    <main class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex-1">
+        
+        <!-- Filter Controls -->
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-10 pb-6 border-b border-slate-900">
+            <div class="flex flex-wrap items-center gap-2">
+                <button class="filter-btn px-4 py-2 rounded-xl bg-orange-600 text-white text-xs font-semibold shadow-md shadow-orange-600/20 transition-all cursor-pointer" data-filter="all">All Products</button>
+                <button class="filter-btn px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 text-xs font-semibold transition-all cursor-pointer" data-filter="decor">Decorative</button>
+                <button class="filter-btn px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 text-xs font-semibold transition-all cursor-pointer" data-filter="toys">Toys</button>
+                <button class="filter-btn px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 text-xs font-semibold transition-all cursor-pointer" data-filter="holiday">Holiday</button>
+                <button class="filter-btn px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 text-xs font-semibold transition-all cursor-pointer" data-filter="functional">Functional</button>
+            </div>
+
+            <div class="text-xs text-slate-500 font-medium">
+                <i class="fa-solid fa-cube text-orange-400 mr-1.5"></i> Custom 3D prints crafted to order
+            </div>
+        </div>
+
+        <!-- Product Grid -->
+        <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Dynamically populated by store.js with image support -->
+        </div>
+    </main>
+
+
+
+
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-slate-900 text-slate-500 text-sm mt-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between">
+            <p>&copy; 2026 Bolivar Prints. All rights reserved. Built with precision.</p>
+            <div class="flex space-x-6 mt-4 sm:mt-0">
+                <a href="#" class="hover:text-slate-300 transition-colors"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" class="hover:text-slate-300 transition-colors"><i class="fa-brands fa-twitter"></i></a>
+                <a href="#" class="hover:text-slate-300 transition-colors"><i class="fa-brands fa-discord"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- External JavaScript -->
+    <script src="main.js"></script>
+    <script src="cart.js"></script>
+    <script src="auth.js"></script>
+    <script src="store.js"></script>
+</body>
+</html>

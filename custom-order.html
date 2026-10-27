@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bolivar Prints | Custom Orders</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-950 text-slate-100 font-['Inter',sans-serif] antialiased selection:bg-orange-500 selection:text-white">
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 left-0 right-0 z-40 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <a href="index.html" class="flex items-center space-x-3 group">
+                <img src="BP-logo.png" alt="Bolivar Prints Logo" class="w-10 h-10 object-contain" />
+                <div>
+                    <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">BOLIVAR PRINTS</span>
+                    <span class="block text-[10px] tracking-widest text-orange-500 font-semibold uppercase">High-Precision 3D Printing</span>
+                </div>
+            </a>
+
+            <div class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-300">
+                <a href="index.html" class="hover:text-orange-400 transition-colors">Home</a>
+                <a href="index.html#about" class="hover:text-orange-400 transition-colors">About</a>
+                <a href="store.html" class="hover:text-orange-400 transition-colors">Store</a>
+                <a href="custom-order.html" class="text-orange-400 font-semibold transition-colors">Custom Orders</a>
+                <a href="index.html#contact" class="hover:text-orange-400 transition-colors">Contact</a>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <a href="cart.html">
+                    <button id="cart-btn" class="relative p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition-all">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span id="cart-badge" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-orange-600 text-white text-[11px] font-bold rounded-full flex items-center justify-center shadow-md">0</span>
+                    </button>
+                </a>
+                <button id="mobile-menu-button" class="md:hidden p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition-all">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <button id="theme-toggle" class="hidden md:block p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition-all">
+                    <i id="theme-icon" class="fa-solid fa-sun"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-950 border-t border-slate-800">
+            <div class="px-4 pt-2 pb-6 space-y-2 text-sm font-medium text-slate-300">
+                <a href="index.html" class="block py-3 hover:text-orange-400 transition-colors border-b border-slate-800/50">Home</a>
+                <a href="index.html#about" class="block py-3 hover:text-orange-400 transition-colors border-b border-slate-800/50">About</a>
+                <a href="store.html" class="block py-3 hover:text-orange-400 transition-colors border-b border-slate-800/50">Store</a>
+                <a href="custom-order.html" class="block py-3 hover:text-orange-400 transition-colors border-b border-slate-800/50">Custom Orders</a>
+                <a href="index.html#contact" class="block py-3 hover:text-orange-400 transition-colors">Contact</a>
+                <div class="flex items-center justify-between pt-4 mt-2 border-t border-slate-800/50">
+                    <span class="text-sm font-medium text-slate-300">Dark Mode</span>
+                    <button id="theme-toggle-mobile" class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition-all">
+                        <i id="theme-icon-mobile" class="fa-solid fa-sun"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="pt-36 pb-16 border-b border-slate-900 bg-[radial-gradient(circle_at_center,rgba(234,88,12,0.08),transparent_70%)]">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-semibold mb-4">
+                <i class="fa-solid fa-file-arrow-up"></i>
+                <span>Professional Bureau Service</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
+                Request a Custom 3D Print Quote
+            </h1>
+            <p class="text-slate-400 text-base max-w-xl mx-auto">
+                Configure your print specs below. We'll calculate an estimated price on the spot — add it to your cart and we'll confirm the final quote before charging.
+            </p>
+        </div>
+    </header>
+
+    <!-- Custom Order Form Section -->
+    <main class="py-16 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <form id="custom-order-form" class="bg-slate-900 border border-slate-800 rounded-3xl p-8 sm:p-12 shadow-2xl space-y-10">
+
+            <!-- Step 1: Contact Information (Optional) -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-bold text-white flex items-center space-x-2 border-b border-slate-800 pb-3">
+                    <span class="w-7 h-7 rounded-lg bg-orange-600/20 text-orange-500 flex items-center justify-center text-xs font-bold">1</span>
+                    <span>Your Contact Information <span class="text-xs font-normal text-slate-500 ml-1">(Optional)</span></span>
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-400 mb-2">Full Name</label>
+                        <input type="text" id="cust-name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-orange-500 transition-colors" placeholder="John Doe">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-400 mb-2">Email Address</label>
+                        <input type="email" id="cust-email" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-orange-500 transition-colors" placeholder="john@example.com">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Model & File Upload -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-bold text-white flex items-center space-x-2 border-b border-slate-800 pb-3">
+                    <span class="w-7 h-7 rounded-lg bg-orange-600/20 text-orange-500 flex items-center justify-center text-xs font-bold">2</span>
+                    <span>Upload 3D Model / Describe Project</span>
+                </h2>
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-slate-400 mb-2">Upload Files (.STL, .STEP, .OBJ, .3MF)</label>
+                    <div id="file-drop-zone" onclick="triggerFileSelect()" class="relative border-2 border-dashed border-slate-800 hover:border-orange-500/60 rounded-2xl p-8 text-center bg-slate-950 transition-all cursor-pointer group">
+                        <input type="file" id="cust-file" class="hidden" multiple accept="*/*" onchange="handleFileSelect(event)">
+                        
+                        <!-- Empty State -->
+                        <div id="file-empty-state" class="space-y-2 block">
+                            <div class="w-12 h-12 mx-auto rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-cloud-arrow-up text-xl"></i>
+                            </div>
+                            <p class="text-sm font-medium text-slate-300">Drag and drop your 3D files here, or <span class="text-orange-400 font-semibold underline">browse files</span></p>
+                            <p id="file-name-display" class="text-xs text-slate-500">Accepted: .STL · .STEP · .OBJ · .3MF · .ZIP (Up to 50MB)</p>
+                        </div>
+
+                        <!-- Selected State -->
+                        <div id="file-selected-state" class="hidden space-y-3">
+                            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
+                                <i class="fa-solid fa-check"></i>
+                                <span id="file-count-badge">1 File Selected</span>
+                            </div>
+                            <div id="file-details-list" class="space-y-1 text-sm text-white font-medium"></div>
+                            <button type="button" onclick="clearSelectedFiles(event)" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-800 text-slate-300 hover:text-white text-xs transition-colors">
+                                <i class="fa-solid fa-trash-can text-[11px] text-red-400"></i>
+                                <span>Change / Remove file</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-slate-400 mb-2">Project Description & Specifications</label>
+                    <textarea id="cust-notes" rows="3" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-orange-500 transition-colors" placeholder="Describe your intended use, required dimensions, scale, or if you need design assistance..."></textarea>
+                </div>
+            </div>
+
+            <!-- Step 3: Material & Technical Parameters -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-bold text-white flex items-center space-x-2 border-b border-slate-800 pb-3">
+                    <span class="w-7 h-7 rounded-lg bg-orange-600/20 text-orange-500 flex items-center justify-center text-xs font-bold">3</span>
+                    <span>Material & Print Settings</span>
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-400 mb-2">Material Preference</label>
+                        <select id="cust-material" onchange="updateEstimateUI()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-orange-500 transition-colors cursor-pointer">
+                            <option value="PLA+" class="bg-slate-900 text-white">PLA+ (Rigid & Clean) — $12.00 base</option>
+                            <option value="PETG" class="bg-slate-900 text-white">PETG (Tough / Functional) — $15.00 base</option>
+                            <option value="Silk PLA" class="bg-slate-900 text-white">Silk PLA (Artistic / Glossy) — $18.00 base</option>
+                            <option value="ABS" class="bg-slate-900 text-white">ABS & ASA (UV & Heat Resistant) — $16.00 base</option>
+                            <option value="TPU" class="bg-slate-900 text-white">TPU (Flexible / Rubberized) — $20.00 base</option>
+                            <option value="Carbon Fiber" class="bg-slate-900 text-white">Carbon Fiber & Nylon (Pro) — $28.00 base</option>
+                            <option value="Not Sure" class="bg-slate-900 text-white">Not Sure / Recommend Best — $12.00 base</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-400 mb-2">Color Choice</label>
+                        <input type="text" id="cust-color" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-orange-500 transition-colors" placeholder="e.g., Matte Black, Silk Gold">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-400 mb-2">Infill Density / Strength</label>
+                        <select id="cust-infill" onchange="updateEstimateUI()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-orange-500 transition-colors cursor-pointer">
+                            <option value="standard" class="bg-slate-900 text-white">Standard (15%–20%) [1.0x]</option>
+                            <option value="sturdy" class="bg-slate-900 text-white">Sturdy (30%–40%) [1.25x]</option>
+                            <option value="solid" class="bg-slate-900 text-white">Solid / Heavy-Duty (80%–100%) [1.55x]</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Order Configuration -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-bold text-white flex items-center space-x-2 border-b border-slate-800 pb-3">
+                    <span class="w-7 h-7 rounded-lg bg-orange-600/20 text-orange-500 flex items-center justify-center text-xs font-bold">4</span>
+                    <span>Order Configuration</span>
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <!-- Quantity -->
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-400 mb-2">Quantity</label>
+                        <input type="number" id="cust-quantity" min="1" max="100" value="1" oninput="updateEstimateUI()" onchange="updateEstimateUI()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-orange-500 transition-colors">
+                    </div>
+                    <!-- Urgency / Timeline -->
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-400 mb-2">Target Timeline / Urgency</label>
+                        <select id="cust-urgency" onchange="updateEstimateUI()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-orange-500 transition-colors cursor-pointer">
+                            <option value="standard" class="bg-slate-900 text-white">Standard (2–5 business days) [Normal]</option>
+                            <option value="rush" class="bg-slate-900 text-white">Rush Turnaround (1–2 business days) [+30%]</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Post-Processing -->
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-slate-400 mb-3">Post-Processing Options</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <!-- Raw Print Card -->
+                        <div id="card-pp-raw" onclick="togglePostProcess('raw')" class="flex items-center space-x-3 p-4 rounded-xl bg-orange-500/5 border border-orange-500/50 cursor-pointer hover:border-orange-500 transition-all select-none">
+                            <input type="checkbox" id="pp-raw" value="raw" class="hidden" checked>
+                            <span id="pp-raw-check" class="w-5 h-5 rounded-md border border-orange-500 bg-orange-600/20 flex items-center justify-center shrink-0 transition-colors">
+                                <i class="fa-solid fa-check text-[10px] text-orange-400"></i>
+                            </span>
+                            <div>
+                                <p class="text-sm font-semibold text-white">Raw Print</p>
+                                <p class="text-xs text-slate-500">Clean finish straight off printer</p>
+                            </div>
+                        </div>
+
+                        <!-- Support Removal Card -->
+                        <div id="card-pp-support" onclick="togglePostProcess('support')" class="flex items-center space-x-3 p-4 rounded-xl bg-slate-950 border border-slate-800 cursor-pointer hover:border-orange-500 transition-all select-none">
+                            <input type="checkbox" id="pp-support" value="support_removal" class="hidden">
+                            <span id="pp-support-check" class="w-5 h-5 rounded-md border border-slate-700 bg-slate-900 flex items-center justify-center shrink-0 transition-colors">
+                                <i class="fa-solid fa-check text-[10px] text-orange-400 hidden"></i>
+                            </span>
+                            <div>
+                                <p class="text-sm font-semibold text-white">Support Removal</p>
+                                <p class="text-xs text-slate-500">Deburred support points +$3/ea</p>
+                            </div>
+                        </div>
+
+                        <!-- Sanding & Polish Card -->
+                        <div id="card-pp-sand" onclick="togglePostProcess('sand')" class="flex items-center space-x-3 p-4 rounded-xl bg-slate-950 border border-slate-800 cursor-pointer hover:border-orange-500 transition-all select-none">
+                            <input type="checkbox" id="pp-sand" value="sanding" class="hidden">
+                            <span id="pp-sand-check" class="w-5 h-5 rounded-md border border-slate-700 bg-slate-900 flex items-center justify-center shrink-0 transition-colors">
+                                <i class="fa-solid fa-check text-[10px] text-orange-400 hidden"></i>
+                            </span>
+                            <div>
+                                <p class="text-sm font-semibold text-white">Sanding & Polish</p>
+                                <p class="text-xs text-slate-500">Smooth layer lines +$6/ea</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Estimate Panel -->
+            <div id="price-estimate-panel" class="rounded-2xl border border-orange-500/20 bg-orange-500/5 p-6 space-y-4">
+                <div class="flex items-center justify-between border-b border-orange-500/10 pb-3">
+                    <p class="text-xs font-bold uppercase tracking-widest text-orange-400 flex items-center space-x-2">
+                        <i class="fa-solid fa-calculator"></i>
+                        <span>Instant Price Estimate</span>
+                    </p>
+                    <span class="text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full font-semibold">
+                        <i class="fa-solid fa-bolt mr-1 text-[9px]"></i>Live Calculation
+                    </span>
+                </div>
+                <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                    <div class="space-y-1.5 text-xs text-slate-400" id="estimate-breakdown">
+                        <p>Calculating live quote…</p>
+                    </div>
+                    <div class="text-left sm:text-right">
+                        <span id="estimate-total" class="text-3xl font-extrabold text-white tracking-tight">$12.00</span>
+                        <p class="text-[11px] text-slate-500 mt-0.5">estimated total (<span id="estimate-unit-rate">$12.00</span> / unit)</p>
+                    </div>
+                </div>
+                <p class="text-[11px] text-slate-500 border-t border-slate-800/80 pt-3 flex items-center space-x-1.5">
+                    <i class="fa-solid fa-circle-info text-orange-400/80"></i>
+                    <span>This estimate reflects material rates and machine calibration. We verify your CAD file dimensions before production.</span>
+                </p>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="pt-2">
+                <button type="button" id="add-to-cart-btn" onclick="handleAddCustomQuote(event)" class="group w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 hover:from-orange-500 hover:via-amber-500 hover:to-orange-500 text-white font-bold text-sm tracking-wide shadow-xl shadow-orange-600/30 hover:shadow-orange-500/50 active:scale-[0.98] transition-all duration-200 flex items-center justify-center space-x-2.5 border border-orange-400/30 cursor-pointer">
+                    <i class="fa-solid fa-cart-plus text-sm group-hover:scale-110 transition-transform"></i>
+                    <span>Add Custom Quote to Cart</span>
+                </button>
+            </div>
+        </form>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-slate-900 text-slate-500 text-sm mt-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between">
+            <p>&copy; 2026 Bolivar Prints. All rights reserved. Built with precision.</p>
+            <div class="flex space-x-6 mt-4 sm:mt-0">
+                <a href="#" class="hover:text-slate-300 transition-colors"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" class="hover:text-slate-300 transition-colors"><i class="fa-brands fa-twitter"></i></a>
+                <a href="#" class="hover:text-slate-300 transition-colors"><i class="fa-brands fa-discord"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+    <script src="cart.js"></script>
+    <script src="auth.js"></script>
+    <script src="custom-order.js"></script>
+</body>
+</html>

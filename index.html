@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bolivar Prints | Custom 3D Printing & Creations</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-950 text-slate-100 font-['Inter',sans-serif] antialiased selection:bg-orange-500 selection:text-white">
+
+    <!-- Navbar -->
+    <nav id="main-nav" class="fixed top-0 left-0 right-0 z-40 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <a href="index.html" class="flex items-center space-x-3 group">
+                <img src="BP-logo.png" alt="Bolivar Prints Logo" class="w-10 h-10 object-contain" />
+                <div>
+                    <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">BOLIVAR PRINTS</span>
+                    <span class="block text-[10px] tracking-widest text-orange-500 font-semibold uppercase">High-Precision 3D Printing</span>
+                </div>
+            </a>
+            
+            <div class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-300">
+                <a href="index.html" class="text-orange-400 font-semibold">Home</a>
+                <a id="nav-about" href="#about" class="hover:text-orange-400 transition-colors">About</a>
+                <a href="store.html" class="hover:text-orange-400 transition-colors">Store</a>
+                <a href="custom-order.html" class="hover:text-orange-400 transition-colors">Custom Orders</a>
+                <a id="nav-contact" href="#contact" class="hover:text-orange-400 transition-colors">Contact</a>
+                
+            </div>
+
+
+            <div class="flex items-center space-x-4">
+              <a href="cart.html"> <button id="cart-btn" class="relative p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition-all">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span id="cart-badge" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-orange-600 text-white text-[11px] font-bold rounded-full flex items-center justify-center shadow-md">0</span>
+                </button> </a>
+                <button id="mobile-menu-button" class="md:hidden p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition-all">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            
+               <!-- Add this inside your navbar flex action group alongside the cart button -->
+            <button id="theme-toggle" class="hidden md:block p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition-all">
+                <i id="theme-icon" class="fa-solid fa-sun"></i>
+            </button>
+            </div>
+        </div>
+    
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-950 border-t border-slate-800">
+            <div class="px-4 pt-2 pb-6 space-y-2 text-sm font-medium text-slate-300">
+                <a href="index.html" class="block py-3 hover:text-orange-400 transition-colors border-b border-slate-800/50">Home</a>
+                <a href="index.html#about" class="block py-3 hover:text-orange-400 transition-colors border-b border-slate-800/50">About</a>
+                <a href="store.html" class="block py-3 hover:text-orange-400 transition-colors border-b border-slate-800/50">Store</a>
+                <a href="custom-order.html" class="block py-3 hover:text-orange-400 transition-colors border-b border-slate-800/50">Custom Orders</a>
+                <a href="index.html#contact" class="block py-3 hover:text-orange-400 transition-colors">Contact</a>
+                <div class="flex items-center justify-between pt-4 mt-2 border-t border-slate-800/50">
+                    <span class="text-sm font-medium text-slate-300">Dark Mode</span>
+                    <button id="theme-toggle-mobile" class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition-all">
+                        <i id="theme-icon-mobile" class="fa-solid fa-sun"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+</nav>
+
+    <!-- Hero Section -->
+    <header class="relative overflow-hidden pt-36 pb-24 lg:pt-44 lg:pb-32 border-b border-slate-900">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(234,88,12,0.1),transparent_50%)] pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="max-w-3xl">
+                <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-semibold mb-6">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span>Powered by Bambu Lab Precision</span>
+                </div>
+                <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-6 leading-tight">
+                    Brought to Life in <span class="bg-gradient-to-r from-orange-500 to-amber-400 bg-clip-text text-transparent">3D Detail.</span>
+                </h1>
+                <p class="text-lg sm:text-xl text-slate-400 mb-8 leading-relaxed">
+                    Custom-crafted mechanical parts, artistic displays, and functional gear printed with industrial-grade precision right here in Central Florida.
+                </p>
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
+                    <a href="store.html" class="inline-flex justify-center items-center px-8 py-4 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-semibold shadow-lg shadow-orange-600/25 transition-all">
+                        Explore Store <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                    </a>
+                    <a href="custom-order.html" class="inline-flex justify-center items-center px-8 py-4 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-200 font-semibold transition-all">
+                        Request Custom Print
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- About Me Section -->
+    <section id="about" class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-b border-slate-900">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+                <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-semibold mb-4">
+                    <i class="fa-solid fa-user-gear"></i>
+                    <span>The Maker</span>
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-6">
+                    Precision Craftsmanship, Driven by Passion.
+                </h2>
+                <p class="text-slate-300 text-base leading-relaxed mb-4">
+                    Hi, I'm Caleb Bolivar the founder and creator behind Bolivar Prints. Operating out of my home workshop in Central Florida, I specialize in transforming digital designs and functional concepts into physical reality.
+                </p>
+                <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                    Equipped with high performance Bambu Lab printing technology, every piece that leaves the workshop is engineered for dimensional accuracy, structural strength, and clean aesthetics whether it's custom mechanical parts, intricate artistic displays, or rugged desktop gear.
+                </p>
+                <div class="grid grid-cols-3 gap-2 sm:gap-4 pt-6 border-t border-slate-800/80">
+                    <div class="min-w-0 text-center">
+                        <span class="block text-2xl font-extrabold text-white">100%</span>
+                        <span class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Locally Printed</span>
+                    </div>
+                    <div class="min-w-0 text-center">
+                        <span class="block text-2xl font-extrabold text-orange-500">Pro</span>
+                        <span class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Bambu Lab Gear</span>
+                    </div>
+                    <div class="min-w-0 text-center">
+                        <span class="block text-2xl font-extrabold text-white">Fast</span>
+                        <span class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Turnaround</span>
+                    </div>
+                </div>
+            </div>
+            <div class="relative">
+                <div class="absolute inset-0 bg-gradient-to-tr from-orange-600/20 to-amber-500/10 rounded-3xl filter blur-xl"></div>
+                <div class="relative bg-slate-900 border border-slate-800 p-8 rounded-3xl shadow-2xl space-y-6">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-2xl bg-orange-600/20 border border-orange-500/30 flex items-center justify-center text-orange-400">
+                            <i class="fa-solid fa-microchip text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-bold text-white">Advanced Equipment</h3>
+                            <p class="text-xs text-slate-400">High-speed multi-material capabilities</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-2xl bg-orange-600/20 border border-orange-500/30 flex items-center justify-center text-orange-400">
+                            <i class="fa-solid fa-layer-group text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-bold text-white">Material Variety</h3>
+                            <p class="text-xs text-slate-400">PLA, PETG, Silk, and Specialty Filaments</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-2xl bg-orange-600/20 border border-orange-500/30 flex items-center justify-center text-orange-400">
+                            <i class="fa-solid fa-location-dot text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-bold text-white">Central Florida Based</h3>
+                            <p class="text-xs text-slate-400">Proudly serving local and online creators</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-b border-slate-900">
+        <div class="text-center max-w-2xl mx-auto mb-16">
+            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-semibold mb-4">
+                <i class="fa-solid fa-gears"></i>
+                <span>Simple Workflow</span>
+            </div>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">
+                How Bolivar Prints Works
+            </h2>
+            <p class="text-slate-400 text-base">
+                Whether you're buying a ready-to-ship creation or bringing your own custom concept to life, the process is fast and seamless.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Step 1 -->
+            <div class="bg-slate-900 border border-slate-800 p-8 rounded-3xl relative group hover:border-orange-500/50 transition-all">
+                <div class="absolute -top-4 left-8 w-10 h-10 rounded-xl bg-orange-600 text-white font-extrabold flex items-center justify-center shadow-lg shadow-orange-600/30 text-sm">
+                    01
+                </div>
+                <div class="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400 mb-6 mt-2">
+                    <i class="fa-solid fa-compass-drafting text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">Choose or Submit</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">
+                    Browse our ready-to-ship catalog in the store, or submit an STL model link along with your color and material preferences.
+                </p>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="bg-slate-900 border border-slate-800 p-8 rounded-3xl relative group hover:border-orange-500/50 transition-all">
+                <div class="absolute -top-4 left-8 w-10 h-10 rounded-xl bg-orange-600 text-white font-extrabold flex items-center justify-center shadow-lg shadow-orange-600/30 text-sm">
+                    02
+                </div>
+                <div class="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400 mb-6 mt-2">
+                    <i class="fa-solid fa-print text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">Precision Printing</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">
+                    Your items are printed on high-performance Bambu Lab equipment utilizing optimized slicing profiles for maximum strength and detail.
+                </p>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="bg-slate-900 border border-slate-800 p-8 rounded-3xl relative group hover:border-orange-500/50 transition-all">
+                <div class="absolute -top-4 left-8 w-10 h-10 rounded-xl bg-orange-600 text-white font-extrabold flex items-center justify-center shadow-lg shadow-orange-600/30 text-sm">
+                    03
+                </div>
+                <div class="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400 mb-6 mt-2">
+                    <i class="fa-solid fa-box-archive text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">Shipped Securely</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">
+                    Each print is carefully inspected, packed with protective wrapping, and shipped straight to your door from Central Florida.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Material & Filament Quality Callout Section -->
+    <!-- Material Guide Section -->
+<section class="py-20 px-6 max-w-7xl mx-auto">
+    <div class="text-center mb-16">
+        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-orange-500/10 text-orange-400 border border-orange-500/20 mb-4">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+            Material Guide
+        </span>
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Engineered for Performance & Aesthetics</h2>
+        <p class="text-slate-400 max-w-2xl mx-auto">We select premium filaments calibrated specifically for our Bambu Lab setup, ensuring top-tier surface finish, layer bonding, and structural strength.</p>
+    </div>
+
+    <!-- Filament Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- PLA & PLA+ -->
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl flex flex-col justify-between hover:border-orange-500/40 transition-colors">
+            <div>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded bg-orange-500/10 text-orange-400 mb-4 inline-block">Best for Decor & Organizers</span>
+                <h3 class="text-xl font-bold text-white mb-2">PLA & PLA+</h3>
+                <p class="text-slate-400 text-sm mb-6">Rigid, eco-friendly, and capable of capturing exceptionally crisp details. Ideal for desk organizers, miniatures, and display pieces.</p>
+            </div>
+            <div class="border-t border-slate-800/80 pt-4 flex justify-between text-xs text-slate-500">
+                <span>Finish: Matte / Glossy</span>
+                <span>Rigidity: High</span>
+            </div>
+        </div>
+
+        <!-- PETG -->
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl flex flex-col justify-between hover:border-orange-500/40 transition-colors">
+            <div>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded bg-blue-500/10 text-blue-400 mb-4 inline-block">Best for Mechanical Parts</span>
+                <h3 class="text-xl font-bold text-white mb-2">PETG</h3>
+                <p class="text-slate-400 text-sm mb-6">Tough, impact-resistant, and heat-resistant. Perfect for functional brackets, structural mounts, clips, and everyday utility.</p>
+            </div>
+            <div class="border-t border-slate-800/80 pt-4 flex justify-between text-xs text-slate-500">
+                <span>Finish: Semi-Gloss</span>
+                <span>Durability: Extreme</span>
+            </div>
+        </div>
+
+        <!-- Silk & Multi-Color -->
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl flex flex-col justify-between hover:border-orange-500/40 transition-colors">
+            <div>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded bg-purple-500/10 text-purple-400 mb-4 inline-block">Best for Eye-Catching Display</span>
+                <h3 class="text-xl font-bold text-white mb-2">Silk & Multi-Color</h3>
+                <p class="text-slate-400 text-sm mb-6">Stunning dual-tone or metallic sheen finishes that catch light from every angle. Excellent for articulated dragons and statement gifts.</p>
+            </div>
+            <div class="border-t border-slate-800/80 pt-4 flex justify-between text-xs text-slate-500">
+                <span>Finish: Metallic / Shimmer</span>
+                <span>Aesthetics: Premium</span>
+            </div>
+        </div>
+
+        <!-- ABS & ASA -->
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl flex flex-col justify-between hover:border-orange-500/40 transition-colors">
+            <div>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded bg-red-500/10 text-red-400 mb-4 inline-block">Best for Outdoor & Heat</span>
+                <h3 class="text-xl font-bold text-white mb-2">ABS & ASA</h3>
+                <p class="text-slate-400 text-sm mb-6">Superior UV and high-temperature resistance. Engineered to withstand outdoor elements and rigorous industrial environments.</p>
+            </div>
+            <div class="border-t border-slate-800/80 pt-4 flex justify-between text-xs text-slate-500">
+                <span>Finish: Matte UV Stable</span>
+                <span>Temp Resistance: High</span>
+            </div>
+        </div>
+
+        <!-- TPU Flexible -->
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl flex flex-col justify-between hover:border-orange-500/40 transition-colors">
+            <div>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-400 mb-4 inline-block">Best for Flexible Uses</span>
+                <h3 class="text-xl font-bold text-white mb-2">TPU (Flexible)</h3>
+                <p class="text-slate-400 text-sm mb-6">Rubber-like elasticity and vibration dampening. Ideal for protective phone cases, custom gaskets, wheels, and shock-absorbing feet.</p>
+            </div>
+            <div class="border-t border-slate-800/80 pt-4 flex justify-between text-xs text-slate-500">
+                <span>Finish: Rubberized</span>
+                <span>Flexibility: High</span>
+            </div>
+        </div>
+
+        <!-- Carbon Fiber & Nylon (Pro) -->
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl flex flex-col justify-between hover:border-orange-500/40 transition-colors">
+            <div>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded bg-amber-500/10 text-amber-400 mb-4 inline-block">Engineering Grade</span>
+                <h3 class="text-xl font-bold text-white mb-2">Carbon Fiber & Nylon</h3>
+                <p class="text-slate-400 text-sm mb-6">Industrial composites reinforced with carbon fibers. Offers extreme rigidity-to-weight ratio for heavy-duty structural prototypes.</p>
+            </div>
+            <div class="border-t border-slate-800/80 pt-4 flex justify-between text-xs text-slate-500">
+                <span>Finish: Textured Matte</span>
+                <span>Strength: Industrial</span>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+    <!-- Reviews Section -->
+    <section id="reviews" class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-b border-slate-900">
+        <div class="text-center max-w-2xl mx-auto mb-16">
+            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-semibold mb-4">
+                <i class="fa-solid fa-star"></i>
+                <span>Customer Feedback</span>
+            </div>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">
+                Trusted by Makers & Creators
+            </h2>
+            <p class="text-slate-400 text-base">
+                See what clients are saying about the print quality, fast turnaround times, and attention to detail at Bolivar Prints.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Review 1 -->
+            <div class="bg-slate-900 border border-slate-800 p-8 rounded-3xl flex flex-col justify-between">
+                <div>
+                    <div class="flex text-orange-400 space-x-1 mb-4 text-sm">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                        "Ordered a custom set of PETG brackets and structural mounts. The layer adhesion and dimensional precision were spot on. Will definitely be returning for future builds!"
+                    </p>
+                </div>
+                <div class="flex items-center space-x-3 pt-4 border-t border-slate-800/80">
+                    <div class="w-10 h-10 rounded-full bg-orange-600/20 border border-orange-500/30 text-orange-400 font-bold flex items-center justify-center text-sm">
+                        JD
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-bold text-white">Jordan D.</h4>
+                        <span class="text-xs text-slate-500">Custom Mechanical Order</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review 2 -->
+            <div class="bg-slate-900 border border-slate-800 p-8 rounded-3xl flex flex-col justify-between">
+                <div>
+                    <div class="flex text-orange-400 space-x-1 mb-4 text-sm">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                        "The crystal dragon printed in silk filament looks incredible! The multi-segment articulation is so smooth and the colors shimmer brilliantly. Shipped super fast too."
+                    </p>
+                </div>
+                <div class="flex items-center space-x-3 pt-4 border-t border-slate-800/80">
+                    <div class="w-10 h-10 rounded-full bg-orange-600/20 border border-orange-500/30 text-orange-400 font-bold flex items-center justify-center text-sm">
+                        SM
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-bold text-white">Sarah M.</h4>
+                        <span class="text-xs text-slate-500">Store Customer</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review 3 -->
+            <div class="bg-slate-900 border border-slate-800 p-8 rounded-3xl flex flex-col justify-between">
+                <div>
+                    <div class="flex text-orange-400 space-x-1 mb-4 text-sm">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                        "Incredible communication and turnaround. I sent over an STL file for a desk organizer and got a fair quote right away. The finished product exceeded my expectations."
+                    </p>
+                </div>
+                <div class="flex items-center space-x-3 pt-4 border-t border-slate-800/80">
+                    <div class="w-10 h-10 rounded-full bg-orange-600/20 border border-orange-500/30 text-orange-400 font-bold flex items-center justify-center text-sm">
+                        TK
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-bold text-white">Tyler K.</h4>
+                        <span class="text-xs text-slate-500">Custom STL Print</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="py-24 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 border-b border-slate-900">
+        <div class="text-center mb-16">
+            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-semibold mb-4">
+                <i class="fa-solid fa-circle-question"></i>
+                <span>Got Questions?</span>
+            </div>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">
+                Frequently Asked Questions
+            </h2>
+            <p class="text-slate-400 text-base">
+                Everything you need to know about ordering, file requirements, materials, and shipping.
+            </p>
+        </div>
+
+        <div class="space-y-6">
+            <!-- FAQ 1 -->
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl">
+                <h3 class="text-lg font-bold text-white mb-2 flex items-center space-x-3">
+                    <span class="w-7 h-7 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center text-sm font-semibold">Q</span>
+                    <span>What file formats do you accept for custom orders?</span>
+                </h3>
+                <p class="text-slate-400 text-sm pl-10 leading-relaxed">
+                    We primarily accept <strong class="text-slate-200">.STL</strong>, <strong class="text-slate-200">.STEP</strong>, or direct links to repositories like Printables and Thingiverse. If you have another file format or just a rough idea/drawing, feel free to reach out through our custom order form and we'll see how we can help!
+                </p>
+            </div>
+
+            <!-- FAQ 2 -->
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl">
+                <h3 class="text-lg font-bold text-white mb-2 flex items-center space-x-3">
+                    <span class="w-7 h-7 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center text-sm font-semibold">Q</span>
+                    <span>What is your typical turnaround time?</span>
+                </h3>
+                <p class="text-slate-400 text-sm pl-10 leading-relaxed">
+                    Ready-to-ship store items typically ship out within 1 – 2 business days. Custom orders and prints generally have a turnaround time of <strong class="text-slate-200">2 to 5 business days</strong> depending on print complexity, size, and current print queue volume.
+                </p>
+            </div>
+
+            <!-- FAQ 3 -->
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl">
+                <h3 class="text-lg font-bold text-white mb-2 flex items-center space-x-3">
+                    <span class="w-7 h-7 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center text-sm font-semibold">Q</span>
+                    <span>Where are you located and do you ship?</span>
+                </h3>
+                <p class="text-slate-400 text-sm pl-10 leading-relaxed">
+                    Bolivar Prints operates directly out of Central Florida. We offer secure shipping straight to your door across the United States.
+                </p>
+            </div>
+
+            <!-- FAQ 4 -->
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl">
+                <h3 class="text-lg font-bold text-white mb-2 flex items-center space-x-3">
+                    <span class="w-7 h-7 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center text-sm font-semibold">Q</span>
+                    <span>How do I choose between PLA and PETG?</span>
+                </h3>
+                <p class="text-slate-400 text-sm pl-10 leading-relaxed">
+                    Choose <strong class="text-slate-200">PLA/PLA+</strong> for crisp aesthetics, desk organizers, miniatures, and decorative items. Choose <strong class="text-slate-200">PETG</strong> if your print needs to handle mechanical stress, temperature resistance, or heavy daily wear-and-tear. Check our Material Guide above for full details!
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-24 bg-slate-900/50 border-b border-slate-900">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-xs font-bold tracking-widest text-orange-500 uppercase mb-2">Get In Touch</h2>
+                <h3 class="text-3xl font-extrabold text-white tracking-tight mb-4">Have Questions?</h3>
+                <p class="text-slate-400 max-w-xl mx-auto">Got questions about our prints, materials, or custom capabilities? Send us a note and we'll reply as soon as our printers finish the current batch.</p>
+            </div>
+            
+            <form id="contact-form" class="bg-slate-900 p-8 rounded-2xl border border-slate-800 shadow-xl space-y-6">
+                <div id="contact-status" class="hidden p-4 rounded-xl text-xs font-semibold"></div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div>
+                        <label for="contact-name" class="block text-xs font-semibold uppercase text-slate-400 mb-2">Your Name</label>
+                        <input type="text" id="contact-name" name="name" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500 transition-colors" placeholder="Customer Name">
+                    </div>
+                    <div>
+                        <label for="contact-email" class="block text-xs font-semibold uppercase text-slate-400 mb-2">Email Address</label>
+                        <input type="email" id="contact-email" name="email" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500 transition-colors" placeholder="customer@example.com">
+                    </div>
+                </div>
+                <div>
+                    <label for="contact-message" class="block text-xs font-semibold uppercase text-slate-400 mb-2">Your Message</label>
+                    <textarea id="contact-message" name="message" rows="4" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500 transition-colors" placeholder="Describe your questions or order details..."></textarea>
+                </div>
+                <button type="submit" id="contact-submit-btn" class="w-full py-4 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-semibold shadow-lg shadow-orange-600/20 transition-all flex items-center justify-center space-x-2 cursor-pointer">
+                    <i class="fa-solid fa-paper-plane text-sm"></i>
+                    <span>Submit Message</span>
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-slate-900 text-slate-500 text-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between">
+            <p>&copy; 2026 Bolivar Prints. All rights reserved. Built with precision.</p>
+            <div class="flex space-x-6 mt-4 sm:mt-0">
+                <a href="#" class="hover:text-slate-300 transition-colors"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" class="hover:text-slate-300 transition-colors"><i class="fa-brands fa-twitter"></i></a>
+                <a href="#" class="hover:text-slate-300 transition-colors"><i class="fa-brands fa-discord"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- External JavaScript -->
+    <script src="main.js"></script>
+    <script src="cart.js"></script>
+    <script src="auth.js"></script>
+</body>
+</html>

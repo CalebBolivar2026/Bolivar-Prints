@@ -1,0 +1,194 @@
+[
+  {
+    "id": "crystal-dragon",
+    "name": "Articulated Crystal Dragon",
+    "price": 24.99,
+    "category": "decor",
+    "tag": "Silk Dual-Tone",
+    "icon": "fa-dragon",
+    "description": "Flexible, multi-segment print featuring a mesmerizing silk dual-tone color shift. Great desk companion or statement gift.",
+    "colors": [
+      "Silk Gold",
+      "Matte Black",
+      "Galaxy Blue"
+    ],
+    "inStock": true,
+    "image": null
+  },
+  {
+    "id": "low-poly-planter",
+    "name": "Geometric Faceted Planter",
+    "price": 18.5,
+    "category": "decor",
+    "tag": "Modern Decor",
+    "icon": "fa-seedling",
+    "description": "Contemporary faceted planter engineered with drainage holes and catch tray. Ideal for succulents, cacti, and desk greenery.",
+    "colors": [
+      "Matte Marble",
+      "Terracotta",
+      "Sage Green"
+    ],
+    "inStock": true,
+    "image": null
+  },
+  {
+    "id": "spiral-vortex-lamp",
+    "name": "Spiral Vortex Accent Lamp Shade",
+    "price": 29.99,
+    "category": "decor",
+    "tag": "Ambient Glow",
+    "icon": "fa-lightbulb",
+    "description": "Parametrically designed spiral lamp shade casting captivating lighting patterns. Designed for standard LED pendant fixtures.",
+    "colors": [
+      "Translucent Amber",
+      "Frost White",
+      "Smoke Grey"
+    ],
+    "inStock": true,
+    "image": null
+  },
+  {
+    "id": "articulated-axolotl",
+    "name": "Articulated Flexi Axolotl",
+    "price": 16.99,
+    "category": "toys",
+    "tag": "Articulated Fidget",
+    "icon": "fa-fish",
+    "description": "Wiggle-ready, print-in-place articulated axolotl with expressive gills and fluid movement. Extremely satisfying tactile sensory fidget.",
+    "colors": [
+      "Cotton Candy",
+      "Pastel Pink",
+      "Glow in the Dark"
+    ],
+    "inStock": true,
+    "image": null
+  },
+  {
+    "id": "infinity-fidget-cube",
+    "name": "Precision Infinity Fidget Cube",
+    "price": 12.99,
+    "category": "toys",
+    "tag": "Mechanical Fidget",
+    "icon": "fa-cubes",
+    "description": "Seamless interlocking hinge cube that folds continuously inward and outward. Smooth tactile feedback for concentration and stress relief.",
+    "colors": [
+      "Stealth Black",
+      "Neon Orange",
+      "Carbon Grey"
+    ],
+    "inStock": true,
+    "image": null
+  },
+  {
+    "id": "mecha-robot-figure",
+    "name": "Poseable Mecha Guardian Robot",
+    "price": 22.99,
+    "category": "toys",
+    "tag": "Action Collectible",
+    "icon": "fa-robot",
+    "description": "High-articulation mini mecha warrior featuring ball-and-socket joints, customizable gear, and dynamic standing poseability.",
+    "colors": [
+      "Gunmetal Titanium",
+      "Crimson Red",
+      "Cyber Blue"
+    ],
+    "inStock": true,
+    "image": null
+  },
+  {
+    "id": "skull-pumpkin-lantern",
+    "name": "Faceted Jack-O'-Lantern Tealight",
+    "price": 19.99,
+    "category": "holiday",
+    "tag": "Seasonal Drop",
+    "icon": "fa-ghost",
+    "description": "Low-poly faceted Halloween jack-o-lantern designed for battery tealights. Dramatic interior light dispersion for spooky season.",
+    "colors": [
+      "Spooky Orange",
+      "Bone White",
+      "Midnight Black"
+    ],
+    "inStock": true,
+    "image": null
+  },
+  {
+    "id": "geometric-holiday-tree",
+    "name": "Minimalist Spiral Holiday Tree",
+    "price": 17.5,
+    "category": "holiday",
+    "tag": "Winter Holiday",
+    "icon": "fa-tree",
+    "description": "Elegant spiral tree with modern clean lines and topped star. Minimalist aesthetic for modern holiday mantle and table displays.",
+    "colors": [
+      "Forest Green",
+      "Silk Silver",
+      "Champagne Gold"
+    ],
+    "inStock": true,
+    "image": null
+  },
+  {
+    "id": "snowflake-coaster-set",
+    "name": "Faceted Snowflake Coaster Set (4-Pk)",
+    "price": 14.99,
+    "category": "holiday",
+    "tag": "Holiday Gift Set",
+    "icon": "fa-snowflake",
+    "description": "Set of four geometric snowflake drink coasters with silicone non-slip feet grooves. Durable, heat-resistant PETG construction.",
+    "colors": [
+      "Ice Blue",
+      "Pearl White",
+      "Ruby Red"
+    ],
+    "inStock": true,
+    "image": null
+  },
+  {
+    "id": "under-desk-headphone-mount",
+    "name": "Heavy-Duty Under-Desk Headphone Mount",
+    "price": 14.99,
+    "category": "functional",
+    "tag": "Desk Gear",
+    "icon": "fa-headphones",
+    "description": "Solid PETG structural headphone hook with integrated cable wrap. Mounts securely beneath desks with heavy-duty 3M VHB tape or screws.",
+    "colors": [
+      "Matte Black",
+      "Stealth Grey",
+      "Pure White"
+    ],
+    "inStock": true,
+    "image": null
+  },
+  {
+    "id": "hex-cable-organizer",
+    "name": "Modular Hex Cable Management Hub",
+    "price": 11.5,
+    "category": "functional",
+    "tag": "Cable Management",
+    "icon": "fa-sitemap",
+    "description": "Interlocking honeycomb channels that hold USB-C, lightning, and display cables in place without slipping off the workspace edge.",
+    "colors": [
+      "Matte Black",
+      "Industrial Orange",
+      "Slate"
+    ],
+    "inStock": true,
+    "image": null
+  },
+  {
+    "id": "ergonomic-phone-stand",
+    "name": "Dual-Angle Ergonomic Device Stand",
+    "price": 15.99,
+    "category": "functional",
+    "tag": "Workspace Utility",
+    "icon": "fa-mobile-screen-button",
+    "description": "Sturdy phone and tablet stand featuring 45° and 65° ergonomic viewing angles with pass-through charging cable port.",
+    "colors": [
+      "Space Grey",
+      "Matte Black",
+      "Deep Navy"
+    ],
+    "inStock": true,
+    "image": null
+  }
+]

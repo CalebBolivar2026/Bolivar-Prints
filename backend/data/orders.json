@@ -1,0 +1,60 @@
+[
+  {
+    "orderId": "BP-MV8QJ7N7-3727",
+    "transactionId": "TXN-NU1N92-MV8QJ7N7",
+    "status": "confirmed",
+    "createdAt": "2026-10-14T23:22:38.334Z",
+    "estimatedDelivery": "Oct 18, 2026 – Oct 21, 2026",
+    "customer": {
+      "name": "Alex Bolivar",
+      "email": "alex@example.com",
+      "phone": "555-234-5678"
+    },
+    "shippingAddress": {
+      "street": "742 Evergreen Terrace",
+      "apt": "",
+      "city": "Orlando",
+      "state": "FL",
+      "zip": "32801",
+      "country": "United States"
+    },
+    "shippingMethod": {
+      "id": "standard",
+      "name": "Standard Ground (3-5 Days)",
+      "cost": 5.99,
+      "isFree": false
+    },
+    "items": [
+      {
+        "id": "crystal-dragon",
+        "name": "Articulated Crystal Dragon",
+        "unitPrice": 24.99,
+        "quantity": 1,
+        "color": "Silk Gold",
+        "lineTotal": 24.99
+      }
+    ],
+    "promo": null,
+    "notes": "",
+    "pricingSummary": {
+      "subtotal": 24.99,
+      "discount": 0,
+      "discountedSubtotal": 24.99,
+      "shipping": "$5.99",
+      "shippingNum": 5.99,
+      "tax": 1.75,
+      "total": 32.73
+    },
+    "payment": {
+      "method": "card",
+      "status": "authorized",
+      "transactionId": "TXN-NU1N92-MV8QJ7N7",
+      "authorizedAt": "2026-10-14T23:22:38.334Z",
+      "cardLast4": "4242",
+      "cardBrand": "Visa",
+      "cardholderName": "Alex Bolivar"
+    },
+    "userId": "usr_mv8qi761_kcmt",
+    "updatedAt": "2026-10-25T16:13:53.011Z"
+  }
+]

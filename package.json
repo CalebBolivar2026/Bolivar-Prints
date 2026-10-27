@@ -1,0 +1,10 @@
+{
+  "name": "bolivar-prints",
+  "version": "1.0.0",
+  "description": "Bolivar Prints - 3D Printing E-Commerce Website",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "node --watch backend/server.js",
+    "install:backend": "cd backend && npm install"
+  }
+}

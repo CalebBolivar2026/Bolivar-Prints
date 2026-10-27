@@ -1,0 +1,12 @@
+{
+  "announcement": {
+    "enabled": true,
+    "text": "🎉 Special Launch Offer: Free US Shipping on orders over $35 with code PRINTSHIP!",
+    "badge": "Special Notice",
+    "linkText": "Browse Catalog",
+    "linkUrl": "store.html"
+  },
+  "featuredPromoCode": "BOLIVAR10",
+  "storeNotice": "Precision 3D printing studio in Central Florida.",
+  "updatedAt": "2026-10-25T01:54:22.840Z"
+}
