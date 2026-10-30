@@ -662,29 +662,38 @@ async function handlePlaceOrder() {
     }
 
     try {
+        // Build authorization headers — include token when user is logged in.
+        // The server extracts userId from the VERIFIED token, so we do NOT include
+        // userId in the body (doing so would allow spoofing any user's account).
+        const checkoutHeaders = { 'Content-Type': 'application/json' };
+        const storedToken = localStorage.getItem('bolivar_token');
+        if (storedToken) {
+            checkoutHeaders['Authorization'] = `Bearer ${storedToken}`;
+        }
+
         const response = await fetch(`${API_BASE}/api/checkout`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: checkoutHeaders,
             body: JSON.stringify({
                 items: cart,
                 customer: {
-                    name: custName,
+                    name:  custName,
                     email: custEmail,
                     phone: custPhone,
                 },
                 shippingAddress: {
-                    street: shipStreet,
-                    apt: shipApt,
-                    city: shipCity,
-                    state: shipState,
-                    zip: shipZip,
+                    street:  shipStreet,
+                    apt:     shipApt,
+                    city:    shipCity,
+                    state:   shipState,
+                    zip:     shipZip,
                     country: 'United States',
                 },
                 shippingMethod: activeShippingMethod,
-                payment: paymentPayload,
-                promoCode: appliedPromo ? appliedPromo.code : '',
-                notes: orderNotes,
-                userId: (typeof getCurrentUser === 'function' && getCurrentUser()) ? getCurrentUser().id : null,
+                payment:        paymentPayload,
+                promoCode:      appliedPromo ? appliedPromo.code : '',
+                notes:          orderNotes,
+                // NOTE: userId intentionally omitted — server reads it from the auth token
             }),
         });
 

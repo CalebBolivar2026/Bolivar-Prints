@@ -611,7 +611,7 @@ async function loadOrders() {
             const data = await res.json();
             if (data.success && Array.isArray(data.orders)) {
                 adminOrders = data.orders;
-                renderOrdersTable();
+                filterOrdersTable();
             }
         }
     } catch (err) {
@@ -619,32 +619,65 @@ async function loadOrders() {
     }
 }
 
-function renderOrdersTable() {
+function filterOrdersTable() {
+    const query      = (document.getElementById('order-search-input')?.value || '').trim().toLowerCase();
+    const statusFilter = document.getElementById('order-filter-status')?.value || 'all';
+
+    const filtered = adminOrders.filter(o => {
+        const matchesStatus = statusFilter === 'all' || (o.status || 'confirmed').toLowerCase() === statusFilter;
+        if (!matchesStatus) return false;
+        if (!query) return true;
+        const id      = (o.orderId || '').toLowerCase();
+        const name    = (o.customer?.name || '').toLowerCase();
+        const email   = (o.customer?.email || '').toLowerCase();
+        return id.includes(query) || name.includes(query) || email.includes(query);
+    });
+
+    renderOrdersTable(filtered);
+}
+
+function renderOrdersTable(list = null) {
     const tbody = document.getElementById('admin-orders-table-body');
     if (!tbody) return;
 
-    if (adminOrders.length === 0) {
+    const orders = list !== null ? list : adminOrders;
+
+    if (orders.length === 0) {
+        const isEmpty = adminOrders.length === 0;
         tbody.innerHTML = `
             <tr>
-                <td colspan="6" class="py-12 text-center text-slate-500 text-xs">
+                <td colspan="7" class="py-12 text-center text-slate-500 text-xs">
                     <i class="fa-solid fa-receipt text-3xl mb-2 text-slate-700"></i>
-                    <p>No customer orders placed yet.</p>
+                    <p>${isEmpty ? 'No customer orders placed yet.' : 'No orders match your current filter.'}</p>
                 </td>
             </tr>
         `;
         return;
     }
 
-    tbody.innerHTML = adminOrders.map(o => {
-        const dateStr = o.createdAt ? new Date(o.createdAt).toLocaleDateString() : 'Recent';
-        const total = o.pricingSummary?.total ? `$${o.pricingSummary.total.toFixed(2)}` : '$0.00';
-        const custName = o.customer?.name || 'Customer';
-        const custEmail = o.customer?.email || '';
-        const itemsCount = (o.items || []).reduce((sum, item) => sum + (item.quantity || 1), 0);
+    tbody.innerHTML = orders.map(o => {
+        const dateStr       = o.createdAt ? new Date(o.createdAt).toLocaleDateString() : 'Recent';
+        const total         = o.pricingSummary?.total ? `$${o.pricingSummary.total.toFixed(2)}` : '$0.00';
+        const custName      = o.customer?.name  || 'Customer';
+        const custEmail     = o.customer?.email || '';
+        const itemsCount    = (o.items || []).reduce((sum, it) => sum + (it.quantity || 1), 0);
         const currentStatus = (o.status || 'confirmed').toLowerCase();
+        const isArchived    = currentStatus === 'archived';
+
+        // Status badge colour
+        const statusColors = {
+            confirmed:  'bg-blue-500/10 text-blue-400 border-blue-500/20',
+            printing:   'bg-amber-500/10 text-amber-400 border-amber-500/20',
+            ready:      'bg-purple-500/10 text-purple-400 border-purple-500/20',
+            shipped:    'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
+            completed:  'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+            cancelled:  'bg-red-500/10 text-red-400 border-red-500/20',
+            archived:   'bg-slate-700/40 text-slate-400 border-slate-700',
+        };
+        const badgeCls = statusColors[currentStatus] || statusColors.confirmed;
 
         return `
-            <tr class="border-b border-slate-800/60 hover:bg-slate-900/40 transition-colors text-xs text-slate-300">
+            <tr class="border-b border-slate-800/60 hover:bg-slate-900/40 transition-colors text-xs text-slate-300 ${isArchived ? 'opacity-60' : ''}">
                 <td class="py-3 px-4 font-mono font-bold text-orange-400">
                     ${escapeHtml(o.orderId || 'ORDER')}
                 </td>
@@ -664,13 +697,32 @@ function renderOrdersTable() {
                 <td class="py-3 px-4">
                     <select onchange="updateOrderStatus('${o.orderId}', this.value)"
                         class="py-1 px-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs font-semibold text-white focus:outline-none focus:border-orange-500 transition-colors">
-                        <option value="confirmed" ${currentStatus === 'confirmed' ? 'selected' : ''}>Confirmed</option>
-                        <option value="printing" ${currentStatus === 'printing' ? 'selected' : ''}>3D Printing</option>
-                        <option value="ready" ${currentStatus === 'ready' ? 'selected' : ''}>Ready for Pickup/Pack</option>
-                        <option value="shipped" ${currentStatus === 'shipped' ? 'selected' : ''}>Shipped</option>
-                        <option value="completed" ${currentStatus === 'completed' ? 'selected' : ''}>Completed</option>
-                        <option value="cancelled" ${currentStatus === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                        <option value="confirmed"  ${currentStatus === 'confirmed'  ? 'selected' : ''}>Confirmed</option>
+                        <option value="printing"   ${currentStatus === 'printing'   ? 'selected' : ''}>3D Printing</option>
+                        <option value="ready"      ${currentStatus === 'ready'      ? 'selected' : ''}>Ready for Pickup/Pack</option>
+                        <option value="shipped"    ${currentStatus === 'shipped'    ? 'selected' : ''}>Shipped</option>
+                        <option value="completed"  ${currentStatus === 'completed'  ? 'selected' : ''}>Completed</option>
+                        <option value="archived"   ${currentStatus === 'archived'   ? 'selected' : ''}>Archived</option>
+                        <option value="cancelled"  ${currentStatus === 'cancelled'  ? 'selected' : ''}>Cancelled</option>
                     </select>
+                </td>
+                <td class="py-3 px-4 text-right">
+                    <div class="inline-flex items-center space-x-1.5">
+                        <!-- Archive / Unarchive toggle -->
+                        <button type="button"
+                            onclick="openOrderActionModal('archive', '${escapeHtml(o.orderId)}', '${escapeHtml(custName)}', '${total}', '${currentStatus}')"
+                            class="p-2 rounded-xl ${isArchived ? 'bg-slate-700/60 hover:bg-slate-600 text-slate-300' : 'bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white'} transition-all cursor-pointer"
+                            title="${isArchived ? 'Unarchive order' : 'Archive order'}">
+                            <i class="fa-solid ${isArchived ? 'fa-box-open' : 'fa-box-archive'} text-xs"></i>
+                        </button>
+                        <!-- Permanent delete -->
+                        <button type="button"
+                            onclick="openOrderActionModal('delete', '${escapeHtml(o.orderId)}', '${escapeHtml(custName)}', '${total}', '${currentStatus}')"
+                            class="p-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-all cursor-pointer"
+                            title="Permanently delete order">
+                            <i class="fa-solid fa-trash text-xs"></i>
+                        </button>
+                    </div>
                 </td>
             </tr>
         `;
@@ -690,12 +742,150 @@ async function updateOrderStatus(orderId, newStatus) {
         });
 
         if (res.ok) {
-            showAdminToast(`Order ${orderId} updated to: ${newStatus.toUpperCase()}`, 'success');
+            // Update local state so the row re-renders correctly
+            const order = adminOrders.find(o => o.orderId === orderId);
+            if (order) order.status = newStatus;
+            filterOrdersTable();
+            showAdminToast(`Order ${orderId} → ${newStatus.toUpperCase()}`, 'success');
         } else {
             showAdminToast('Failed to update order status', 'error');
         }
     } catch (err) {
         showAdminToast('Error connecting to server', 'error');
+    }
+}
+
+// ─── Order Action Modal (Archive / Delete) ────────────────────────────────────
+
+let _pendingOrderAction = null; // { type: 'archive'|'delete', orderId, currentStatus }
+
+function openOrderActionModal(type, orderId, custName, total, currentStatus) {
+    _pendingOrderAction = { type, orderId, currentStatus };
+
+    const isArchived = currentStatus === 'archived';
+    const isDelete   = type === 'delete';
+    const isUnarchive = type === 'archive' && isArchived;
+
+    // Populate info card
+    document.getElementById('order-modal-id').innerText       = orderId;
+    document.getElementById('order-modal-customer').innerText = custName;
+    document.getElementById('order-modal-total').innerText    = total;
+    document.getElementById('order-modal-status').innerText   = currentStatus.charAt(0).toUpperCase() + currentStatus.slice(1);
+
+    const iconWrap    = document.getElementById('order-modal-icon-wrap');
+    const icon        = document.getElementById('order-modal-icon');
+    const title       = document.getElementById('order-modal-title');
+    const subtitle    = document.getElementById('order-modal-subtitle');
+    const warning     = document.getElementById('order-modal-warning');
+    const confirmBtn  = document.getElementById('order-modal-confirm-btn');
+    const btnIcon     = document.getElementById('order-modal-btn-icon');
+    const btnLabel    = document.getElementById('order-modal-btn-label');
+
+    if (isDelete) {
+        iconWrap.className  = 'w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 text-2xl mb-4';
+        icon.className      = 'fa-solid fa-trash';
+        title.innerText     = 'Permanently Delete Order';
+        subtitle.innerText  = 'This cannot be undone. The entire order record will be erased.';
+        warning.classList.remove('hidden');
+        warning.classList.add('flex');
+        confirmBtn.className = 'py-2.5 px-4 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs shadow-md shadow-red-600/20 transition-all cursor-pointer flex items-center justify-center space-x-1.5';
+        btnIcon.className   = 'fa-solid fa-trash text-xs';
+        btnLabel.innerText  = 'Delete Permanently';
+    } else if (isUnarchive) {
+        iconWrap.className  = 'w-14 h-14 rounded-2xl bg-slate-700/40 border border-slate-700 flex items-center justify-center text-slate-300 text-2xl mb-4';
+        icon.className      = 'fa-solid fa-box-open';
+        title.innerText     = 'Unarchive Order';
+        subtitle.innerText  = 'The order status will be set back to Confirmed and shown in active views.';
+        warning.classList.add('hidden');
+        warning.classList.remove('flex');
+        confirmBtn.className = 'py-2.5 px-4 rounded-xl bg-slate-600 hover:bg-slate-500 text-white font-bold text-xs transition-all cursor-pointer flex items-center justify-center space-x-1.5';
+        btnIcon.className   = 'fa-solid fa-box-open text-xs';
+        btnLabel.innerText  = 'Unarchive Order';
+    } else {
+        iconWrap.className  = 'w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-2xl mb-4';
+        icon.className      = 'fa-solid fa-box-archive';
+        title.innerText     = 'Archive Order';
+        subtitle.innerText  = 'The order will be hidden from active views but kept in your records.';
+        warning.classList.add('hidden');
+        warning.classList.remove('flex');
+        confirmBtn.className = 'py-2.5 px-4 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shadow-md shadow-amber-600/20 transition-all cursor-pointer flex items-center justify-center space-x-1.5';
+        btnIcon.className   = 'fa-solid fa-box-archive text-xs';
+        btnLabel.innerText  = 'Archive Order';
+    }
+
+    const modal = document.getElementById('order-action-modal');
+    modal?.classList.remove('hidden');
+    modal?.classList.add('flex');
+}
+
+function closeOrderActionModal() {
+    _pendingOrderAction = null;
+    const modal = document.getElementById('order-action-modal');
+    modal?.classList.add('hidden');
+    modal?.classList.remove('flex');
+}
+
+async function confirmOrderAction() {
+    if (!_pendingOrderAction) return;
+
+    const { type, orderId, currentStatus } = _pendingOrderAction;
+    const token      = getAdminToken();
+    const confirmBtn = document.getElementById('order-modal-confirm-btn');
+
+    if (confirmBtn) {
+        confirmBtn.disabled = true;
+        confirmBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-xs"></i><span>Working...</span>';
+    }
+
+    try {
+        if (type === 'delete') {
+            // ── Permanent delete ──────────────────────────────────────────────
+            const res = await fetch(`${ADMIN_API_BASE}/api/admin/orders/${orderId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` },
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+                adminOrders = adminOrders.filter(o => o.orderId !== orderId);
+                closeOrderActionModal();
+                filterOrdersTable();
+                await loadStats();
+                showAdminToast(`Order ${orderId} permanently deleted.`, 'success');
+            } else {
+                showAdminToast(data.error || 'Failed to delete order.', 'error');
+            }
+
+        } else {
+            // ── Archive / Unarchive ───────────────────────────────────────────
+            const isCurrentlyArchived = currentStatus === 'archived';
+            const newStatus = isCurrentlyArchived ? 'confirmed' : 'archived';
+
+            const res = await fetch(`${ADMIN_API_BASE}/api/admin/orders/${orderId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({ status: newStatus }),
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+                const order = adminOrders.find(o => o.orderId === orderId);
+                if (order) order.status = newStatus;
+                closeOrderActionModal();
+                filterOrdersTable();
+                const verb = isCurrentlyArchived ? 'unarchived' : 'archived';
+                showAdminToast(`Order ${orderId} ${verb}.`, 'success');
+            } else {
+                showAdminToast(data.error || 'Failed to update order.', 'error');
+            }
+        }
+    } catch (err) {
+        showAdminToast('Network error — could not reach server.', 'error');
+    } finally {
+        if (confirmBtn) {
+            confirmBtn.disabled = false;
+        }
     }
 }
 
@@ -719,45 +909,142 @@ async function loadUsers() {
     }
 }
 
-function renderUsersTable() {
+function filterUsersTable() {
+    const query = (document.getElementById('user-search-input')?.value || '').trim().toLowerCase();
+    const filtered = !query
+        ? adminUsers
+        : adminUsers.filter(u =>
+            (u.name || '').toLowerCase().includes(query) ||
+            (u.email || '').toLowerCase().includes(query)
+        );
+    renderUsersTable(filtered);
+}
+
+function renderUsersTable(list = null) {
     const tbody = document.getElementById('admin-users-table-body');
     if (!tbody) return;
 
-    if (adminUsers.length === 0) {
+    const users = list !== null ? list : adminUsers;
+
+    if (users.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="4" class="py-12 text-center text-slate-500 text-xs">
+                <td colspan="5" class="py-12 text-center text-slate-500 text-xs">
                     <i class="fa-solid fa-users text-3xl mb-2 text-slate-700"></i>
-                    <p>No customer accounts created yet.</p>
+                    <p>${adminUsers.length === 0 ? 'No customer accounts created yet.' : 'No customers match your search.'}</p>
                 </td>
             </tr>
         `;
         return;
     }
 
-    tbody.innerHTML = adminUsers.map(u => {
-        const dateStr = u.createdAt ? new Date(u.createdAt).toLocaleDateString() : 'N/A';
-        const cityState = u.shippingAddress?.city ? `${u.shippingAddress.city}, ${u.shippingAddress.state || ''}` : 'Not set';
+    tbody.innerHTML = users.map(u => {
+        const dateStr   = u.createdAt ? new Date(u.createdAt).toLocaleDateString() : 'N/A';
+        const cityState = u.shippingAddress?.city
+            ? `${u.shippingAddress.city}, ${u.shippingAddress.state || ''}`
+            : '<span class="text-slate-600">Not set</span>';
+
+        // Build initials avatar
+        const initials = (u.name || 'U').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
 
         return `
             <tr class="border-b border-slate-800/60 hover:bg-slate-900/40 transition-colors text-xs text-slate-300">
                 <td class="py-3 px-4">
-                    <p class="font-bold text-white">${escapeHtml(u.name || 'User')}</p>
-                    <p class="text-[10px] text-slate-500">ID: ${u.id}</p>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-slate-700 to-slate-600 flex items-center justify-center text-white text-[10px] font-black shrink-0">
+                            ${escapeHtml(initials)}
+                        </div>
+                        <div>
+                            <p class="font-bold text-white">${escapeHtml(u.name || 'User')}</p>
+                            <p class="text-[10px] text-slate-500 font-mono">ID: ${escapeHtml(u.id)}</p>
+                        </div>
+                    </div>
                 </td>
                 <td class="py-3 px-4">
                     <p class="text-white">${escapeHtml(u.email || '')}</p>
-                    <p class="text-[10px] text-slate-500">${escapeHtml(u.phone || 'No phone')}</p>
+                    <p class="text-[10px] text-slate-500">${escapeHtml(u.phone || 'No phone on file')}</p>
                 </td>
                 <td class="py-3 px-4 text-slate-400">
-                    ${escapeHtml(cityState)}
+                    ${cityState}
                 </td>
                 <td class="py-3 px-4 text-slate-400">
                     ${dateStr}
                 </td>
+                <td class="py-3 px-4 text-right">
+                    <button type="button"
+                        onclick="openDeleteUserModal('${escapeHtml(u.id)}', '${escapeHtml(u.name || 'User')}', '${escapeHtml(u.email || '')}')"
+                        class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/40 text-red-400 hover:text-red-300 text-xs font-semibold transition-all cursor-pointer"
+                        title="Remove this customer account">
+                        <i class="fa-solid fa-user-xmark text-xs"></i>
+                        <span>Remove</span>
+                    </button>
+                </td>
             </tr>
         `;
     }).join('');
+}
+
+// ─── Delete Customer Modal Logic ──────────────────────────────────────────────
+
+let _pendingDeleteUserId = null;
+
+function openDeleteUserModal(userId, userName, userEmail) {
+    _pendingDeleteUserId = userId;
+
+    document.getElementById('delete-user-name').innerText        = userName;
+    document.getElementById('delete-user-email').innerText       = userEmail;
+    document.getElementById('delete-user-id-display').innerText  = userId;
+
+    const modal = document.getElementById('delete-user-modal');
+    modal?.classList.remove('hidden');
+    modal?.classList.add('flex');
+}
+
+function closeDeleteUserModal() {
+    _pendingDeleteUserId = null;
+    const modal = document.getElementById('delete-user-modal');
+    modal?.classList.add('hidden');
+    modal?.classList.remove('flex');
+}
+
+async function confirmDeleteUser() {
+    if (!_pendingDeleteUserId) return;
+
+    const userId    = _pendingDeleteUserId;
+    const token     = getAdminToken();
+    const confirmBtn = document.getElementById('confirm-delete-user-btn');
+
+    if (confirmBtn) {
+        confirmBtn.disabled = true;
+        confirmBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-xs"></i><span>Deleting...</span>';
+    }
+
+    try {
+        const res = await fetch(`${ADMIN_API_BASE}/api/admin/users/${userId}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` },
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+            // Remove from local state immediately — no page reload needed
+            adminUsers = adminUsers.filter(u => u.id !== userId);
+            closeDeleteUserModal();
+            filterUsersTable();       // re-render (respects active search filter)
+            await loadStats();        // refresh the KPI counter in the header
+            showAdminToast('Customer account removed successfully.', 'success');
+        } else {
+            showAdminToast(data.error || 'Failed to delete customer account.', 'error');
+        }
+    } catch (err) {
+        showAdminToast('Network error — could not reach server.', 'error');
+    } finally {
+        if (confirmBtn) {
+            confirmBtn.disabled = false;
+            confirmBtn.innerHTML = '<i class="fa-solid fa-trash text-xs"></i><span>Delete Account</span>';
+        }
+    }
 }
 
 // ─── 7. Contact Submissions Management ────────────────────────────────────────

@@ -3,19 +3,35 @@ const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 
-const productRoutes = require('./routes/products');
+const productRoutes     = require('./routes/products');
 const customOrderRoutes = require('./routes/customOrder');
-const cartRoutes = require('./routes/cart');
-const checkoutRoutes = require('./routes/checkout');
-const authRoutes = require('./routes/auth');
-const adminRoutes = require('./routes/admin');
+const cartRoutes        = require('./routes/cart');
+const checkoutRoutes    = require('./routes/checkout');
+const authRoutes        = require('./routes/auth');
+const adminRoutes       = require('./routes/admin');
 
-const app = express();
+const app  = express();
 const PORT = process.env.PORT || 3000;
 
-// Enable CORS for client requests from all origins (localhost, 127.0.0.1, file://, etc.)
+// ─── CORS ─────────────────────────────────────────────────────────────────────
+// Restrict to known origins. In production set ALLOWED_ORIGINS in the environment.
+// During local development the server also serves the static site on the same
+// origin, so same-origin requests need no CORS header at all.
+const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
+    : [
+        'http://localhost:3000',
+        'http://127.0.0.1:3000',
+    ];
+
 app.use(cors({
-    origin: true,
+    origin: (origin, callback) => {
+        // Allow requests with no origin (e.g., same-origin, Postman, curl)
+        if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+            return callback(null, true);
+        }
+        return callback(new Error(`CORS policy: origin '${origin}' is not allowed`));
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],

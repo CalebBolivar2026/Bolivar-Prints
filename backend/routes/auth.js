@@ -1,28 +1,37 @@
-const express = require('express');
-const router = express.Router();
-const path = require('path');
-const fs = require('fs');
-const crypto = require('crypto');
+/**
+ * Bolivar Prints - Auth Routes
+ *
+ * Handles user registration, login, profile management, and order history.
+ * Tokens are HMAC-SHA256 signed — not forgeable by clients.
+ */
 
-const usersFilePath = path.join(__dirname, '../data/users.json');
+const express  = require('express');
+const router   = express.Router();
+const path     = require('path');
+const fs       = require('fs');
+const crypto   = require('crypto');
+
+const {
+    generateUserToken,
+    generateAdminToken,
+    requireAuth,
+    ADMIN_PASSWORD,
+    ADMIN_USERNAME,
+    ADMIN_EMAIL,
+} = require('../middleware/auth');
+
+const usersFilePath  = path.join(__dirname, '../data/users.json');
 const ordersFilePath = path.join(__dirname, '../data/orders.json');
 
-// Ensure users.json exists
-if (!fs.existsSync(usersFilePath)) {
-    fs.writeFileSync(usersFilePath, '[]', 'utf-8');
-}
+// Ensure data files exist
+if (!fs.existsSync(usersFilePath))  fs.writeFileSync(usersFilePath,  '[]', 'utf-8');
+if (!fs.existsSync(ordersFilePath)) fs.writeFileSync(ordersFilePath, '[]', 'utf-8');
 
-// Ensure orders.json exists
-if (!fs.existsSync(ordersFilePath)) {
-    fs.writeFileSync(ordersFilePath, '[]', 'utf-8');
-}
+// ─── Data helpers ──────────────────────────────────────────────────────────────
 
 function getUsers() {
-    try {
-        return JSON.parse(fs.readFileSync(usersFilePath, 'utf-8'));
-    } catch {
-        return [];
-    }
+    try { return JSON.parse(fs.readFileSync(usersFilePath, 'utf-8')); }
+    catch { return []; }
 }
 
 function saveUsers(users) {
@@ -30,70 +39,37 @@ function saveUsers(users) {
 }
 
 function getOrders() {
-    try {
-        return JSON.parse(fs.readFileSync(ordersFilePath, 'utf-8'));
-    } catch {
-        return [];
-    }
+    try { return JSON.parse(fs.readFileSync(ordersFilePath, 'utf-8')); }
+    catch { return []; }
 }
 
-// Password hashing utilities
-function hashPassword(password, salt) {
-    return crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+// ─── Password utilities ────────────────────────────────────────────────────────
+
+// PBKDF2 with 100,000 iterations (NIST recommendation for SHA-512).
+// NOTE: Existing accounts hashed with 1,000 iterations will need to re-login
+// to transparently upgrade their hash (handled below).
+const PBKDF2_ITERATIONS = 100_000;
+const PBKDF2_LEGACY_ITERATIONS = 1_000; // original iteration count
+
+function hashPassword(password, salt, iterations = PBKDF2_ITERATIONS) {
+    return crypto.pbkdf2Sync(password, salt, iterations, 64, 'sha512').toString('hex');
 }
 
-function generateToken(user) {
-    const payload = `${user.id}:${user.email}:${Date.now()}`;
-    return Buffer.from(payload).toString('base64');
+function verifyPassword(password, user) {
+    // Detect legacy hash (1,000 iterations) by checking stored iteration count.
+    // New users have `pbkdf2Iterations` set; old records don't → treat as legacy.
+    const iterations = user.pbkdf2Iterations || PBKDF2_LEGACY_ITERATIONS;
+    const hash = hashPassword(password, user.salt, iterations);
+    return hash === user.passwordHash;
 }
 
 function sanitizeUser(user) {
-    const { passwordHash, salt, ...safeUser } = user;
+    const { passwordHash, salt, pbkdf2Iterations, ...safeUser } = user;
     return safeUser;
 }
 
-/**
- * Middleware: Verify Auth Token from Header
- */
-function authenticateToken(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+// ─── POST /api/auth/register ──────────────────────────────────────────────────
 
-    if (!token) {
-        return res.status(401).json({ success: false, error: 'Authentication required' });
-    }
-
-    try {
-        const decoded = Buffer.from(token, 'base64').toString('utf-8');
-        if (decoded.startsWith('ADMIN:')) {
-            req.user = {
-                id: 'admin_root',
-                name: 'Store Administrator',
-                email: 'admin@bolivarprints.com',
-                role: 'admin',
-                isAdmin: true,
-            };
-            return next();
-        }
-        const [userId, email] = decoded.split(':');
-        const users = getUsers();
-        const user = users.find(u => u.id === userId && u.email.toLowerCase() === email.toLowerCase());
-
-        if (!user) {
-            return res.status(401).json({ success: false, error: 'Invalid or expired session' });
-        }
-
-        req.user = user;
-        next();
-    } catch {
-        return res.status(401).json({ success: false, error: 'Malformed authentication token' });
-    }
-}
-
-/**
- * POST /api/auth/register
- * Creates a new user account.
- */
 router.post('/register', (req, res) => {
     try {
         const { name, email, password, phone } = req.body;
@@ -115,9 +91,9 @@ router.post('/register', (req, res) => {
             return res.status(409).json({ success: false, error: 'An account with this email already exists' });
         }
 
-        const salt = crypto.randomBytes(16).toString('hex');
-        const passwordHash = hashPassword(password, salt);
-        const userId = `usr_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`;
+        const salt         = crypto.randomBytes(16).toString('hex');
+        const passwordHash = hashPassword(password, salt, PBKDF2_ITERATIONS);
+        const userId       = `usr_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`;
 
         const newUser = {
             id: userId,
@@ -126,13 +102,9 @@ router.post('/register', (req, res) => {
             phone: phone ? phone.trim() : '',
             passwordHash,
             salt,
+            pbkdf2Iterations: PBKDF2_ITERATIONS,
             shippingAddress: {
-                street: '',
-                apt: '',
-                city: '',
-                state: 'FL',
-                zip: '',
-                country: 'United States',
+                street: '', apt: '', city: '', state: 'FL', zip: '', country: 'United States',
             },
             createdAt: new Date().toISOString(),
         };
@@ -140,7 +112,7 @@ router.post('/register', (req, res) => {
         users.push(newUser);
         saveUsers(users);
 
-        const token = generateToken(newUser);
+        const token    = generateUserToken(newUser);
         const safeUser = sanitizeUser(newUser);
 
         res.status(201).json({
@@ -154,10 +126,8 @@ router.post('/register', (req, res) => {
     }
 });
 
-/**
- * POST /api/auth/login
- * Authenticates user credentials.
- */
+// ─── POST /api/auth/login ─────────────────────────────────────────────────────
+
 router.post('/login', (req, res) => {
     try {
         const { email, password } = req.body;
@@ -168,37 +138,51 @@ router.post('/login', (req, res) => {
 
         const normalizedEmail = email.trim().toLowerCase();
 
-        // ─── Special Admin Login Verification ────────────────────────────────
-        if ((normalizedEmail === 'admin' || normalizedEmail === 'admin@bolivarprints.com') && password === 'bolivar') {
+        // ── Admin login ───────────────────────────────────────────────────────
+        const isAdminEmail    = normalizedEmail === ADMIN_USERNAME || normalizedEmail === ADMIN_EMAIL;
+        const isAdminPassword = password === ADMIN_PASSWORD;
+
+        if (isAdminEmail && isAdminPassword) {
             const adminUser = {
                 id: 'admin_root',
                 name: 'Store Administrator',
-                email: 'admin@bolivarprints.com',
+                email: ADMIN_EMAIL,
                 role: 'admin',
                 isAdmin: true,
             };
-            const payload = `ADMIN:admin:${Date.now()}:${crypto.randomBytes(8).toString('hex')}`;
-            const token = Buffer.from(payload).toString('base64');
             return res.json({
                 success: true,
                 message: 'Admin login successful',
                 user: adminUser,
-                token,
+                token: generateAdminToken(),
                 isAdmin: true,
             });
         }
-        const user = users.find(u => u.email.toLowerCase() === normalizedEmail);
+
+        // ── Regular user login ────────────────────────────────────────────────
+        const users = getUsers(); // ← was missing in original, caused ReferenceError
+        const user  = users.find(u => u.email.toLowerCase() === normalizedEmail);
 
         if (!user) {
+            // Constant-time response to prevent user enumeration
+            hashPassword('dummy', crypto.randomBytes(16).toString('hex'));
             return res.status(401).json({ success: false, error: 'Invalid email or password' });
         }
 
-        const checkHash = hashPassword(password, user.salt);
-        if (checkHash !== user.passwordHash) {
+        if (!verifyPassword(password, user)) {
             return res.status(401).json({ success: false, error: 'Invalid email or password' });
         }
 
-        const token = generateToken(user);
+        // Transparently upgrade legacy low-iteration hashes on successful login
+        if (!user.pbkdf2Iterations || user.pbkdf2Iterations < PBKDF2_ITERATIONS) {
+            const idx = users.findIndex(u => u.id === user.id);
+            users[idx].salt             = crypto.randomBytes(16).toString('hex');
+            users[idx].passwordHash     = hashPassword(password, users[idx].salt, PBKDF2_ITERATIONS);
+            users[idx].pbkdf2Iterations = PBKDF2_ITERATIONS;
+            saveUsers(users);
+        }
+
+        const token    = generateUserToken(user);
         const safeUser = sanitizeUser(user);
 
         res.json({
@@ -212,22 +196,18 @@ router.post('/login', (req, res) => {
     }
 });
 
-/**
- * GET /api/auth/me
- * Retrieves the current authenticated user profile.
- */
-router.get('/me', authenticateToken, (req, res) => {
+// ─── GET /api/auth/me ─────────────────────────────────────────────────────────
+
+router.get('/me', requireAuth, (req, res) => {
     res.json({
         success: true,
         user: sanitizeUser(req.user),
     });
 });
 
-/**
- * PUT /api/auth/profile
- * Updates user profile, default shipping address, and password.
- */
-router.put('/profile', authenticateToken, (req, res) => {
+// ─── PUT /api/auth/profile ────────────────────────────────────────────────────
+
+router.put('/profile', requireAuth, (req, res) => {
     try {
         const users = getUsers();
         const index = users.findIndex(u => u.id === req.user.id);
@@ -240,20 +220,19 @@ router.put('/profile', authenticateToken, (req, res) => {
         const user = users[index];
 
         if (name && name.trim()) user.name = name.trim();
-        if (phone !== undefined) user.phone = phone.trim();
+        if (phone !== undefined)  user.phone = phone.trim();
 
         if (shippingAddress && typeof shippingAddress === 'object') {
             user.shippingAddress = {
-                street: shippingAddress.street !== undefined ? shippingAddress.street.trim() : (user.shippingAddress?.street || ''),
-                apt: shippingAddress.apt !== undefined ? shippingAddress.apt.trim() : (user.shippingAddress?.apt || ''),
-                city: shippingAddress.city !== undefined ? shippingAddress.city.trim() : (user.shippingAddress?.city || ''),
-                state: shippingAddress.state !== undefined ? shippingAddress.state.trim() : (user.shippingAddress?.state || 'FL'),
-                zip: shippingAddress.zip !== undefined ? shippingAddress.zip.trim() : (user.shippingAddress?.zip || ''),
+                street:  shippingAddress.street  !== undefined ? shippingAddress.street.trim()  : (user.shippingAddress?.street  || ''),
+                apt:     shippingAddress.apt     !== undefined ? shippingAddress.apt.trim()     : (user.shippingAddress?.apt     || ''),
+                city:    shippingAddress.city    !== undefined ? shippingAddress.city.trim()    : (user.shippingAddress?.city    || ''),
+                state:   shippingAddress.state   !== undefined ? shippingAddress.state.trim()   : (user.shippingAddress?.state   || 'FL'),
+                zip:     shippingAddress.zip     !== undefined ? shippingAddress.zip.trim()     : (user.shippingAddress?.zip     || ''),
                 country: shippingAddress.country !== undefined ? shippingAddress.country.trim() : (user.shippingAddress?.country || 'United States'),
             };
         }
 
-        // Change password if requested
         if (newPassword) {
             if (!currentPassword) {
                 return res.status(400).json({ success: false, error: 'Current password is required to set a new password' });
@@ -261,17 +240,17 @@ router.put('/profile', authenticateToken, (req, res) => {
             if (newPassword.length < 6) {
                 return res.status(400).json({ success: false, error: 'New password must be at least 6 characters' });
             }
-            const currentHash = hashPassword(currentPassword, user.salt);
-            if (currentHash !== user.passwordHash) {
+            if (!verifyPassword(currentPassword, user)) {
                 return res.status(400).json({ success: false, error: 'Incorrect current password' });
             }
 
-            user.salt = crypto.randomBytes(16).toString('hex');
-            user.passwordHash = hashPassword(newPassword, user.salt);
+            user.salt             = crypto.randomBytes(16).toString('hex');
+            user.passwordHash     = hashPassword(newPassword, user.salt, PBKDF2_ITERATIONS);
+            user.pbkdf2Iterations = PBKDF2_ITERATIONS;
         }
 
         user.updatedAt = new Date().toISOString();
-        users[index] = user;
+        users[index]   = user;
         saveUsers(users);
 
         res.json({
@@ -284,27 +263,28 @@ router.put('/profile', authenticateToken, (req, res) => {
     }
 });
 
-/**
- * GET /api/auth/orders
- * Returns all past orders placed by this user (matched by user ID or email).
- */
-router.get('/orders', authenticateToken, (req, res) => {
+// ─── GET /api/auth/orders ─────────────────────────────────────────────────────
+// Returns only orders that belong to the authenticated user.
+// Isolation is enforced server-side: the user ID comes from the verified token,
+// not from any client-supplied parameter.
+
+router.get('/orders', requireAuth, (req, res) => {
     try {
-        const allOrders = getOrders();
-        const userEmail = req.user.email.toLowerCase();
-        const userId = req.user.id;
+        const allOrders   = getOrders();
+        const userEmail   = req.user.email.toLowerCase();
+        const userId      = req.user.id;
 
         const userOrders = allOrders
             .filter(o => {
-                const matchEmail = o.customer && o.customer.email && o.customer.email.toLowerCase() === userEmail;
-                const matchId = o.userId === userId;
+                const matchEmail = o.customer?.email?.toLowerCase() === userEmail;
+                const matchId    = o.userId === userId;
                 return matchEmail || matchId;
             })
             .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
         res.json({
             success: true,
-            count: userOrders.length,
+            count:  userOrders.length,
             orders: userOrders,
         });
     } catch (err) {

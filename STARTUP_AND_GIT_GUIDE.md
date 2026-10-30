@@ -84,7 +84,7 @@ git add .
 
 #### Step 3: Commit with a Descriptive Message
 ```bash
-git commit -m "Add product photo upload and secure checkout page"
+git commit -m ""
 ```
 
 #### Step 4: Push to GitHub

@@ -36,14 +36,23 @@ function updateCartBadge() {
 /**
  * Validates the cart against authoritative backend prices.
  * Overwrites any client-side tampering in localStorage.
+ * Sends the auth token if the user is logged in so the server can
+ * associate the validation with the correct user session.
  */
 async function validateCartWithServer() {
     if (!cart || cart.length === 0) return;
 
     try {
+        // Build request headers — include Authorization token when logged in
+        const headers = { 'Content-Type': 'application/json' };
+        const storedToken = localStorage.getItem('bolivar_token');
+        if (storedToken) {
+            headers['Authorization'] = `Bearer ${storedToken}`;
+        }
+
         const response = await fetch(`${API_BASE}/api/cart/validate`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers,
             body: JSON.stringify({ items: cart }),
         });
 

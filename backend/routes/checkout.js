@@ -1,8 +1,10 @@
-const express = require('express');
-const router = express.Router();
-const path = require('path');
-const fs = require('fs');
-const { calculateCustomOrderPrice } = require('../config/pricing');
+const express  = require('express');
+const router   = express.Router();
+const path     = require('path');
+const fs       = require('fs');
+
+const { optionalAuth }               = require('../middleware/auth');
+const { calculateCustomOrderPrice }  = require('../config/pricing');
 
 const productsFilePath = path.join(__dirname, '../data/products.json');
 const ordersFilePath = path.join(__dirname, '../data/orders.json');
@@ -35,8 +37,13 @@ const PROMO_CODES = {
  * POST /api/checkout
  * Authoritative checkout session, validation, and payment settlement endpoint.
  * Fully protects against client-side tampering of prices, quantities, taxes, and shipping.
+ *
+ * optionalAuth is applied so:
+ *   - Guest shoppers (no token) can still check out.
+ *   - Authenticated users have the userId taken from their VERIFIED token,
+ *     not from the request body (which could be spoofed to claim any user ID).
  */
-router.post('/', (req, res) => {
+router.post('/', optionalAuth, (req, res) => {
     try {
         const {
             items,
@@ -217,7 +224,9 @@ router.post('/', (req, res) => {
                 total,
             },
             payment: paymentSummary,
-            userId: req.body.userId || null,
+            // userId is ALWAYS taken from the verified token (req.user), never from the client body.
+        // This prevents any user from spoofing another user's ID in the order record.
+        userId: req.user ? req.user.id : null,
         };
 
         // Persist confirmed order to database

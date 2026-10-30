@@ -285,9 +285,30 @@
         <!-- ═══════════════════════════════════════════════════════════════════════ -->
         <div id="tab-pane-orders" class="hidden space-y-6">
             <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
-                <div class="mb-6">
-                    <h2 class="text-xl font-bold text-white">Customer Orders</h2>
-                    <p class="text-xs text-slate-400 mt-1">Review orders and update fulfillment status so customers see real-time progress.</p>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-white">Customer Orders</h2>
+                        <p class="text-xs text-slate-400 mt-1">Review orders, update fulfillment status, archive, or permanently remove them.</p>
+                    </div>
+                    <!-- Filters row -->
+                    <div class="flex flex-wrap items-center gap-2">
+                        <div class="relative">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+                            <input type="text" id="order-search-input" oninput="filterOrdersTable()" placeholder="Search order, customer..."
+                                class="pl-9 pr-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 focus:border-orange-500 text-white text-xs placeholder-slate-600 focus:outline-none transition-colors w-44">
+                        </div>
+                        <select id="order-filter-status" onchange="filterOrdersTable()"
+                            class="py-2 px-3 rounded-xl bg-slate-950 border border-slate-800 text-xs font-semibold text-white focus:outline-none focus:border-orange-500 transition-colors">
+                            <option value="all">All Orders</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="printing">3D Printing</option>
+                            <option value="ready">Ready</option>
+                            <option value="shipped">Shipped</option>
+                            <option value="completed">Completed</option>
+                            <option value="archived">Archived</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="overflow-x-auto rounded-2xl border border-slate-800">
@@ -299,7 +320,8 @@
                                 <th class="py-3 px-4">Items</th>
                                 <th class="py-3 px-4">Total</th>
                                 <th class="py-3 px-4">Date</th>
-                                <th class="py-3 px-4">Update Status</th>
+                                <th class="py-3 px-4">Status</th>
+                                <th class="py-3 px-4 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="admin-orders-table-body">
@@ -310,14 +332,19 @@
             </div>
         </div>
 
-        <!-- ═══════════════════════════════════════════════════════════════════════ -->
-        <!-- TAB 4: Registered Customers -->
-        <!-- ═══════════════════════════════════════════════════════════════════════ -->
         <div id="tab-pane-users" class="hidden space-y-6">
             <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
-                <div class="mb-6">
-                    <h2 class="text-xl font-bold text-white">Registered Customer Accounts</h2>
-                    <p class="text-xs text-slate-400 mt-1">View users registered through the site.</p>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-white">Registered Customer Accounts</h2>
+                        <p class="text-xs text-slate-400 mt-1">View and manage customers registered through the site.</p>
+                    </div>
+                    <!-- Customer search -->
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+                        <input type="text" id="user-search-input" oninput="filterUsersTable()" placeholder="Search name or email..."
+                            class="pl-9 pr-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 focus:border-orange-500 text-white text-xs placeholder-slate-600 focus:outline-none transition-colors w-52">
+                    </div>
                 </div>
 
                 <div class="overflow-x-auto rounded-2xl border border-slate-800">
@@ -328,6 +355,7 @@
                                 <th class="py-3 px-4">Contact Info</th>
                                 <th class="py-3 px-4">Location</th>
                                 <th class="py-3 px-4">Registered Date</th>
+                                <th class="py-3 px-4 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="admin-users-table-body">
@@ -532,6 +560,116 @@
                         </a>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── Order Action Confirmation Modal (Archive / Delete) ─────────────── -->
+    <div id="order-action-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-fade-in">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 sm:p-8 shadow-2xl relative">
+            <button type="button" onclick="closeOrderActionModal()" class="absolute top-5 right-5 text-slate-500 hover:text-white p-2">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <!-- Icon + title (swapped by JS depending on action) -->
+            <div class="flex flex-col items-center text-center mb-6">
+                <div id="order-modal-icon-wrap" class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-4">
+                    <i id="order-modal-icon" class="fa-solid fa-box-archive"></i>
+                </div>
+                <h3 id="order-modal-title" class="text-lg font-bold text-white">Archive Order</h3>
+                <p id="order-modal-subtitle" class="text-xs text-slate-400 mt-1">The order will be hidden from active views but kept in records.</p>
+            </div>
+
+            <!-- Order info preview -->
+            <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 mb-6 text-xs space-y-1.5">
+                <div class="flex items-center justify-between">
+                    <span class="text-slate-400 font-semibold">Order ID:</span>
+                    <span id="order-modal-id" class="font-mono font-bold text-orange-400"></span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-slate-400 font-semibold">Customer:</span>
+                    <span id="order-modal-customer" class="font-bold text-white"></span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-slate-400 font-semibold">Total:</span>
+                    <span id="order-modal-total" class="font-mono font-bold text-white"></span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-slate-400 font-semibold">Current Status:</span>
+                    <span id="order-modal-status" class="font-semibold text-slate-300"></span>
+                </div>
+            </div>
+
+            <!-- Warning notice (shown only for delete) -->
+            <div id="order-modal-warning" class="hidden flex items-start space-x-2.5 p-3 rounded-xl bg-red-500/5 border border-red-500/20 text-red-400 text-xs mb-6">
+                <i class="fa-solid fa-triangle-exclamation shrink-0 mt-0.5"></i>
+                <span>This is permanent. The order record will be completely erased and cannot be recovered.</span>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="grid grid-cols-2 gap-3">
+                <button type="button" onclick="closeOrderActionModal()"
+                    class="py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs transition-all cursor-pointer">
+                    Cancel
+                </button>
+                <button type="button" id="order-modal-confirm-btn" onclick="confirmOrderAction()"
+                    class="py-2.5 px-4 rounded-xl text-white font-bold text-xs shadow-md transition-all cursor-pointer flex items-center justify-center space-x-1.5">
+                    <i id="order-modal-btn-icon" class="fa-solid fa-box-archive text-xs"></i>
+                    <span id="order-modal-btn-label">Archive Order</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── Delete Customer Confirmation Modal ───────────────────────────────── -->
+    <div id="delete-user-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-fade-in">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 sm:p-8 shadow-2xl relative">
+            <button type="button" onclick="closeDeleteUserModal()" class="absolute top-5 right-5 text-slate-500 hover:text-white p-2">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <!-- Icon + title -->
+            <div class="flex flex-col items-center text-center mb-6">
+                <div class="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 text-2xl mb-4">
+                    <i class="fa-solid fa-user-xmark"></i>
+                </div>
+                <h3 class="text-lg font-bold text-white">Remove Customer Account</h3>
+                <p class="text-xs text-slate-400 mt-1">This action is permanent and cannot be undone.</p>
+            </div>
+
+            <!-- Customer info preview -->
+            <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 mb-6 text-xs space-y-1.5">
+                <div class="flex items-center justify-between">
+                    <span class="text-slate-400 font-semibold">Name:</span>
+                    <span id="delete-user-name" class="font-bold text-white"></span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-slate-400 font-semibold">Email:</span>
+                    <span id="delete-user-email" class="text-orange-400 font-mono truncate ml-2 max-w-[180px] text-right"></span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-slate-400 font-semibold">User ID:</span>
+                    <span id="delete-user-id-display" class="text-slate-500 font-mono text-[10px]"></span>
+                </div>
+            </div>
+
+            <!-- Warning notice -->
+            <div class="flex items-start space-x-2.5 p-3 rounded-xl bg-amber-500/5 border border-amber-500/20 text-amber-400 text-xs mb-6">
+                <i class="fa-solid fa-triangle-exclamation shrink-0 mt-0.5"></i>
+                <span>Their account will be deleted. Past orders linked to their email will remain in the orders log for your records.</span>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="grid grid-cols-2 gap-3">
+                <button type="button" onclick="closeDeleteUserModal()"
+                    class="py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs transition-all cursor-pointer">
+                    Cancel
+                </button>
+                <button type="button" id="confirm-delete-user-btn" onclick="confirmDeleteUser()"
+                    class="py-2.5 px-4 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs shadow-md shadow-red-600/20 transition-all cursor-pointer flex items-center justify-center space-x-1.5">
+                    <i class="fa-solid fa-trash text-xs"></i>
+                    <span>Delete Account</span>
+                </button>
             </div>
         </div>
     </div>

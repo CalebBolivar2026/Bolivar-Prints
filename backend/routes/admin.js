@@ -1,21 +1,25 @@
 /**
  * Bolivar Prints - Admin Routes
  * Protected admin-only API endpoints for managing the store.
+ * Admin credentials are read from environment variables (never hardcoded).
  */
 const express = require('express');
 const router = express.Router();
 const path = require('path');
 const fs = require('fs');
-const crypto = require('crypto');
 
-const usersFilePath = path.join(__dirname, '../data/users.json');
+const {
+    generateAdminToken,
+    requireAdmin,
+    ADMIN_PASSWORD,
+    ADMIN_USERNAME,
+    ADMIN_EMAIL,
+} = require('../middleware/auth');
+
+const usersFilePath    = path.join(__dirname, '../data/users.json');
 const productsFilePath = path.join(__dirname, '../data/products.json');
-const ordersFilePath = path.join(__dirname, '../data/orders.json');
+const ordersFilePath   = path.join(__dirname, '../data/orders.json');
 const settingsFilePath = path.join(__dirname, '../data/settings.json');
-
-// ─── Admin credentials (hardcoded for simplicity) ────────────────────────────
-const ADMIN_USERNAME = 'admin';
-const ADMIN_PASSWORD = 'bolivar';
 
 // ─── Helper: read JSON data files ────────────────────────────────────────────
 
@@ -31,40 +35,12 @@ function writeJSON(filePath, data) {
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
 }
 
-// ─── Admin token generation & verification ───────────────────────────────────
-
-function generateAdminToken() {
-    const payload = `ADMIN:${ADMIN_USERNAME}:${Date.now()}:${crypto.randomBytes(8).toString('hex')}`;
-    return Buffer.from(payload).toString('base64');
-}
-
-function verifyAdminToken(token) {
-    try {
-        const decoded = Buffer.from(token, 'base64').toString('utf-8');
-        return decoded.startsWith('ADMIN:');
-    } catch {
-        return false;
-    }
-}
-
-// ─── Middleware: require admin auth ──────────────────────────────────────────
-
-function requireAdmin(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-
-    if (!token || !verifyAdminToken(token)) {
-        return res.status(401).json({ success: false, error: 'Admin authentication required' });
-    }
-    next();
-}
-
 // ─── POST /api/admin/login ───────────────────────────────────────────────────
 
 router.post('/login', (req, res) => {
     const { username, password } = req.body;
 
-    if ((username === ADMIN_USERNAME || username === 'admin@bolivarprints.com') && password === ADMIN_PASSWORD) {
+    if ((username === ADMIN_USERNAME || username === ADMIN_EMAIL) && password === ADMIN_PASSWORD) {
         const token = generateAdminToken();
         return res.json({
             success: true,
@@ -74,7 +50,7 @@ router.post('/login', (req, res) => {
                 id: 'admin_root',
                 username: ADMIN_USERNAME,
                 name: 'Store Administrator',
-                email: 'admin@bolivarprints.com',
+                email: ADMIN_EMAIL,
                 role: 'admin',
                 isAdmin: true,
             },
@@ -94,7 +70,7 @@ router.get('/verify', requireAdmin, (req, res) => {
             id: 'admin_root',
             username: ADMIN_USERNAME,
             name: 'Store Administrator',
-            email: 'admin@bolivarprints.com',
+            email: ADMIN_EMAIL,
             role: 'admin',
             isAdmin: true,
         },

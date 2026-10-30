@@ -1,18 +1,1 @@
-[
-  {
-    "id": "1792954051032",
-    "name": "Store Administrator",
-    "email": "admin@bolivarprints.com",
-    "message": "Website test",
-    "status": "unread",
-    "createdAt": "2026-10-25T18:47:31.032Z"
-  },
-  {
-    "id": "1792953924098",
-    "name": "Caleb Bolivar",
-    "email": "calebbolivar18@gmail.com",
-    "message": "test test",
-    "status": "unread",
-    "createdAt": "2026-10-25T18:45:24.098Z"
-  }
-]
+[]
